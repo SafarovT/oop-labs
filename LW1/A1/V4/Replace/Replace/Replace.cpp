@@ -60,6 +60,37 @@ void CopyFileWithReplace(std::istream& input, std::ostream& output,
 	}
 }
 
+bool isFileOpeningFailed(std::ifstream& inputFile, std::ofstream& outputFile)
+{
+	if (!inputFile.is_open())
+	{
+		std::cout << "Failed to open file for reading \n";
+		return true;
+	}
+	if (!outputFile.is_open())
+	{
+		std::cout << "Failed to open file for writing \n";
+		return true;
+	}
+	return false;
+}
+
+bool isWorkWithFilesFailed(std::ifstream& inputFile, std::ofstream& outputFile)
+{
+	if (inputFile.bad())
+	{
+		std::cout << "Failed to read data from input file \n";
+		return true;
+	}
+
+	if (!outputFile.flush())
+	{
+		std::cout << "Failed to write data to output file \n";
+		return true;
+	}
+	return false;
+}
+
 int main(int argc, char* argv[])
 {
 	auto args = ParseArgs(argc, argv);
@@ -70,17 +101,12 @@ int main(int argc, char* argv[])
 
 	std::ifstream inputFile;
 	inputFile.open(args->inputFileName);
-	if (!inputFile.is_open())
-	{
-		std::cout << "Failed to open " << args->inputFileName << " for reading \n";
-		return 1;
-	}
 
 	std::ofstream outputFile;
 	outputFile.open(args->outputFileName);
-	if (!outputFile.is_open())
+
+	if (isFileOpeningFailed(inputFile, outputFile))
 	{
-		std::cout << "Failed to open " << args->outputFileName << " for writing \n";
 		return 1;
 	}
 
@@ -88,15 +114,8 @@ int main(int argc, char* argv[])
 	std::string replace = args->reaplacementString;
 
 	CopyFileWithReplace(inputFile, outputFile, search, replace);
-	if (inputFile.bad())
+	if (isWorkWithFilesFailed(inputFile, outputFile))
 	{
-		std::cout << "Failed to read data from input file \n";
-		return 1;
-	}
-
-	if (!outputFile.flush())
-	{
-		std::cout << "Failed to write data to output file \n";
 		return 1;
 	}
 
