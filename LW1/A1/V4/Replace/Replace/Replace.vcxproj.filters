@@ -13,10 +13,43 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="test-data">
+      <UniqueIdentifier>{da59d536-666e-42f9-9f2e-9f2101bcb3f2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Replace.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="stdafx.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="targetver.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Tests.bat">
+      <Filter>Source Files</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="fox.txt">
+      <Filter>test-data</Filter>
+    </Text>
+    <Text Include="multi-line.txt">
+      <Filter>test-data</Filter>
+    </Text>
+    <Text Include="fox-replace-dog-with-cat.txt">
+      <Filter>test-data</Filter>
+    </Text>
+    <Text Include="multi-line-replace-123-with-789.txt">
+      <Filter>test-data</Filter>
+    </Text>
+    <Text Include="empty.txt">
+      <Filter>test-data</Filter>
+    </Text>
   </ItemGroup>
 </Project>
