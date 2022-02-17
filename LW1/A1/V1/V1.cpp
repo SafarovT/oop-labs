@@ -25,7 +25,7 @@ optional<Args> ParseArgs(int argc, char* argv[])
     return args;
 };
 
-void CopyFile(std::ifstream& input, std::ofstream& output)
+void CopyFile(ifstream& input, ofstream& output)
 {
     char ch;
     while (input.get(ch))
