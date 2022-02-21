@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{11c80e34-5940-4466-b575-5da36e754969}</ProjectGuid>
-    <RootNamespace>Replace</RootNamespace>
+    <ProjectGuid>{4f32a6e3-8583-4930-89fb-8dee78b85990}</ProjectGuid>
+    <RootNamespace>flipbyte</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -155,17 +155,10 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Replace.cpp" />
+    <ClCompile Include="flipbyte.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Tests.bat" />
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="empty.txt" />
-    <Text Include="fox-replace-dog-with-cat.txt" />
-    <Text Include="fox.txt" />
-    <Text Include="multi-line-replace-123-with-789.txt" />
-    <Text Include="multi-line.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
