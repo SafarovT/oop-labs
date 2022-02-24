@@ -9,36 +9,34 @@ struct Args
 
 std::optional<Args> ParseArgs(int argc, char* argv[])
 {
-	int result = 0;
+	int byte = 0;
 	if (argc != 2)
 	{
 		std::cout << "Invalid argument count\n"
 			<< "Usage: replace.exe <byte>\n";
 		return std::nullopt;
 	}
-	while (*argv[1])
+	try
 	{
-		if (*argv[1] >= '0' && *argv[1] <= '9')
-		{
-			result += *argv[1]++ - '0';
-			if (*argv[1])
-			{
-				result *= 10;
-			}
-			if (result > 255)
-			{
-				std::cout << "Please, enter a value in [0, 255]";	
-				return std::nullopt;
-			}
-		}
-		else
-		{
-			std::cout << "Please, enter a value in [0, 255]";
-			return std::nullopt;
-		}
+		byte = std::stoi(argv[1]);
+	}
+	catch (std::invalid_argument& e)
+	{
+		std::cout << "Please, enter a number in [0, 255]";
+		return std::nullopt;
+	}
+	catch (std::out_of_range& e)
+	{
+		std::cout << "Please, enter a number in [0, 255]";
+		return std::nullopt;
+	}
+	if (!(byte >= 0 && byte <= 255))
+	{
+		std::cout << "Please, enter a number in [0, 255]";
+		return std::nullopt;
 	}
 	Args args;
-	args.byte = static_cast<unsigned char>(result);
+	args.byte = static_cast<unsigned char>(byte);
 	return args;
 }
 
@@ -67,3 +65,5 @@ int main(int argc, char* argv[])
 
 	return 0;
 }
+
+//"$(ProjectDir)Tests.bat" "$(TargetPath)"
