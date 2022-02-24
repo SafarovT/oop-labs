@@ -11,7 +11,7 @@ struct Args
 	std::string inputFileName;
 	std::string outputFileName;
 	std::string searchString;
-	std::string reaplacementString;
+	std::string replacementString;
 };
 
  std::optional<Args> ParseArgs(int argc, char* argv[])
@@ -26,7 +26,7 @@ struct Args
 	 args.inputFileName = argv[1];
 	 args.outputFileName = argv[2];
 	 args.searchString = argv[3];
-	 args.reaplacementString = argv[4];
+	 args.replacementString = argv[4];
 	 return args;
 }
 
@@ -57,9 +57,19 @@ void CopyFileWithReplace(std::istream& input, std::ostream& output,
 {
 	std::string line;
 
-	while (std::getline(input, line))
+	if (!searchString.empty())
 	{
-		output << ReplaceString(line, searchString, replacementString) << "\n";
+		while (std::getline(input, line))
+		{
+			output << ReplaceString(line, searchString, replacementString) << "\n";
+		}
+	}
+	else
+	{
+		while (std::getline(input, line))
+		{
+			output << line << "\n";
+		}
 	}
 }
 
@@ -114,7 +124,7 @@ int main(int argc, char* argv[])
 	}
 
 	std::string search = args->searchString;
-	std::string replace = args->reaplacementString;
+	std::string replace = args->replacementString;
 
 	CopyFileWithReplace(inputFile, outputFile, search, replace);
 	if (isWorkWithFilesFailed(inputFile, outputFile))

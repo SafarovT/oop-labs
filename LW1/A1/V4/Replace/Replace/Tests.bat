@@ -14,9 +14,14 @@ if ERRORLEVEL 1 goto err
 fc.exe "%TEMP%\fox.txt" fox-replace-dog-with-cat.txt
 if ERRORLEVEL 1 goto err
 
-%PROGRAM% multi-line.txt "%TEMP%\multi-line.txt" 123 789
+%PROGRAM% fox.txt "%TEMP%\fox.txt" "" cat
 if ERRORLEVEL 1 goto err
-fc.exe "%TEMP%\multi-line.txt" multi-line-replace-123-with-789.txt
+fc.exe "%TEMP%\fox.txt" fox.txt
+if ERRORLEVEL 1 goto err
+
+%PROGRAM% numbers.txt "%TEMP%\numbers.txt" 1231234 4
+if ERRORLEVEL 1 goto err
+fc.exe "%TEMP%\numbers.txt" numbers_1231234_with_4.txt
 if ERRORLEVEL 1 goto err
 
 %PROGRAM% empty.txt "%TEMP%\empty.txt" 1 2

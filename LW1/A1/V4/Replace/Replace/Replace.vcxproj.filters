@@ -31,13 +31,13 @@
     <Text Include="fox.txt">
       <Filter>test-data</Filter>
     </Text>
-    <Text Include="multi-line.txt">
+    <Text Include="numbers.txt">
       <Filter>test-data</Filter>
     </Text>
     <Text Include="fox-replace-dog-with-cat.txt">
       <Filter>test-data</Filter>
     </Text>
-    <Text Include="multi-line-replace-123-with-789.txt">
+    <Text Include="numbers_1231234_with_4.txt">
       <Filter>test-data</Filter>
     </Text>
     <Text Include="empty.txt">

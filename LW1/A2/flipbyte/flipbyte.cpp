@@ -42,14 +42,14 @@ std::optional<Args> ParseArgs(int argc, char* argv[])
 
 unsigned char ReverseByte(unsigned char byte)
 {
-	int base = 256;
-	unsigned char res = 0;
+	int changingBit = 256;
+	unsigned char result = 0;
 	while (byte != 0)
 	{
-		res += (byte & 1) * (base >>= 1);
+		result += (byte & 1) * (changingBit >>= 1);
 		byte >>= 1;
 	}
-	return res;
+	return result;
 }
 
 int main(int argc, char* argv[])

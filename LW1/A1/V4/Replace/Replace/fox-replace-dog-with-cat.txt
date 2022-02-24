@@ -1,1 +1,2 @@
-a quick brown fox jumps over the lazy cat
+a quick brown fox
+jumps over the lazy cat
