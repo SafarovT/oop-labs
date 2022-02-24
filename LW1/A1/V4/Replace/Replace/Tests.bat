@@ -19,7 +19,7 @@ if ERRORLEVEL 1 goto err
 fc.exe "%TEMP%\fox.txt" fox.txt
 if ERRORLEVEL 1 goto err
 
-%PROGRAM% numbers.txt "%TEMP%\numbers.txt" 1231234 4
+%PROGRAM% numbers.txt "%TEMP%\numbers.txt" 1231234 1234
 if ERRORLEVEL 1 goto err
 fc.exe "%TEMP%\numbers.txt" numbers_1231234_with_4.txt
 if ERRORLEVEL 1 goto err
