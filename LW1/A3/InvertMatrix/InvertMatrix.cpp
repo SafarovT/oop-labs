@@ -5,8 +5,8 @@
 
 struct Args
 {
-    int matrix[3][3];
-}
+	std::string inputFileName;
+};
 
 std::optional<Args> ParseArgs(int argc, char* argv[])
 {
@@ -16,18 +16,24 @@ std::optional<Args> ParseArgs(int argc, char* argv[])
 			<< "Usage: replace.exe <MatrixFile.txt>\n";
 		return std::nullopt;
 	}
-	std::ifstream inputFile;
-	inputFile.open(argv[1]);
 
+	Args args;
+	args.inputFileName = argv[1];
+}
+
+bool FileOpened(std::ifstream& inputFile, std::string inputFileName)
+{
+	inputFile.open(inputFileName);
 	if (!inputFile.is_open())
 	{
 		std::cout << "Failed to open file for reading \n";
-		return std::nullopt;
+		return false;
 	}
+	return true;
+}
 
-	Args args;
-	int matrix[3][3];
-
+bool MatrixRead(int matrix[3][3], std::ifstream& inputFile)
+{
 	int inValue;
 	for (int i = 0; i < 3; ++i)
 	{
@@ -40,20 +46,41 @@ std::optional<Args> ParseArgs(int argc, char* argv[])
 			else
 			{
 				std::cout << "Enter a correct matrix with numbers";
-				return std::nullopt;
+				return false;
 			}
 		}
 	}
-
-	args.matrix = matrix;
-
-	if (inputFile.bad())
-	{
-		std::cout << "Failed to read data from input file \n";
-		return std::nullopt;
-	}
+	return true;
 }
 
 int main(int argc, char* argv[])
 {
+	auto args = ParseArgs(argc, argv);
+	if (!args)
+	{
+		return 1;
+	}
+
+	std::ifstream inputFile;
+	if (!FileOpened)
+	{
+		return 1;
+	}
+
+	int matrix[3][3];
+
+	if (!MatrixRead(matrix, inputFile))
+	{
+		return 1;
+	}
+
+	for (int i = 0; i < 3; ++i)
+	{
+		for (int j = 0; j < 3; ++j)
+		{
+			std::cout << matrix[i][j] << " ";
+		}
+		std::cout << std::endl;
+	}
+	return 0;
 }
