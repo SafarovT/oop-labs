@@ -1,6 +1,7 @@
 ﻿#include <iostream>
 #include <optional>
 #include <fstream>
+#include <math.h>
 
 struct Args
 {
@@ -73,12 +74,11 @@ void GetMultedMatrix(double matrix1[3][3], double matrix2[3][3], double multedMa
 
 void WriteMatrix(double matrix[3][3])
 {
-    std::cout.precision(3);
     for (int i = 0; i < 3; ++i)
     {
         for (int j = 0; j < 3; ++j)
         {
-            std::cout << matrix[i][j] << " ";
+            std::cout << floor(matrix[i][j] * 1000) / 1000 << " ";
         }
         std::cout << std::endl;
     }
@@ -95,7 +95,6 @@ int main(int argc, char* argv[])
     std::ifstream inputFile1;
     std::ifstream inputFile2;
 
-    //4. Попробуй разнести по функциям
     inputFile1.open(args->inputMatrixFile1);
     inputFile2.open(args->inputMatrixFile2);
 
