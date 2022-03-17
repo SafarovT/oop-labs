@@ -5,6 +5,8 @@ VisualStudioVersion = 17.0.32126.317
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "InvertMatrix", "InvertMatrix\InvertMatrix.vcxproj", "{6F7D5508-820A-4324-8281-397D1BDF77CD}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MultMatrix", "MultMatrix\MultMatrix.vcxproj", "{3D0DA96D-F22B-41B3-AD89-9F550EB97F63}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -21,6 +23,14 @@ Global
 		{6F7D5508-820A-4324-8281-397D1BDF77CD}.Release|x64.Build.0 = Release|x64
 		{6F7D5508-820A-4324-8281-397D1BDF77CD}.Release|x86.ActiveCfg = Release|Win32
 		{6F7D5508-820A-4324-8281-397D1BDF77CD}.Release|x86.Build.0 = Release|Win32
+		{3D0DA96D-F22B-41B3-AD89-9F550EB97F63}.Debug|x64.ActiveCfg = Debug|x64
+		{3D0DA96D-F22B-41B3-AD89-9F550EB97F63}.Debug|x64.Build.0 = Debug|x64
+		{3D0DA96D-F22B-41B3-AD89-9F550EB97F63}.Debug|x86.ActiveCfg = Debug|Win32
+		{3D0DA96D-F22B-41B3-AD89-9F550EB97F63}.Debug|x86.Build.0 = Debug|Win32
+		{3D0DA96D-F22B-41B3-AD89-9F550EB97F63}.Release|x64.ActiveCfg = Release|x64
+		{3D0DA96D-F22B-41B3-AD89-9F550EB97F63}.Release|x64.Build.0 = Release|x64
+		{3D0DA96D-F22B-41B3-AD89-9F550EB97F63}.Release|x86.ActiveCfg = Release|Win32
+		{3D0DA96D-F22B-41B3-AD89-9F550EB97F63}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

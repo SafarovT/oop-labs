@@ -21,20 +21,10 @@ std::optional<Args> ParseArgs(int argc, char* argv[])
 	args.inputFileName = argv[1];
 }
 
-bool FileOpened(std::ifstream& inputFile, std::string inputFileName)
-{
-	inputFile.open(inputFileName);
-	if (!inputFile.is_open())
-	{
-		std::cout << "Failed to open file for reading \n";
-		return false;
-	}
-	return true;
-}
-
 bool MatrixRead(int matrix[3][3], std::ifstream& inputFile)
 {
 	int inValue;
+	std::cout << "Enter Matrix read "; //
 	for (int i = 0; i < 3; ++i)
 	{
 		for (int j = 0; j < 3; ++j)
@@ -42,6 +32,7 @@ bool MatrixRead(int matrix[3][3], std::ifstream& inputFile)
 			if (inputFile >> inValue)
 			{
 				matrix[i][j] = inValue;
+				std::cout << inValue << " "; //
 			}
 			else
 			{
@@ -62,13 +53,17 @@ int main(int argc, char* argv[])
 	}
 
 	std::ifstream inputFile;
-	if (!FileOpened)
+
+	inputFile.open(args->inputFileName);
+	if (!inputFile.is_open())
 	{
+		std::cout << "Failed to open file for reading \n";
 		return 1;
 	}
 
 	int matrix[3][3];
 
+	std::cout << "M!";
 	if (!MatrixRead(matrix, inputFile))
 	{
 		return 1;
