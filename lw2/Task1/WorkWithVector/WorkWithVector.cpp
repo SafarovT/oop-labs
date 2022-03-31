@@ -2,24 +2,21 @@
 #include <algorithm>
 #include <vector>
 
-bool ReadVector(std::vector<double> vector)
+void ReadVector(std::vector<double> vector)
 {
     double inValue;
     while (std::cin >> inValue)
     {
         vector.push_back(inValue);
     }
-
-    return true;
 }
 
 int main()
 {
     std::vector<double> vector;
-    if (!ReadVector(vector))
-    {
-        return 1;
-    }
+    ReadVector(vector);
+
+    double minValue = std::min_element(vector[0], vector[2]);
 
     return 0;
 }
