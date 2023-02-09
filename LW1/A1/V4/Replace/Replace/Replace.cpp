@@ -1,6 +1,3 @@
-// Replace.cpp : This file contains the 'main' function. Program execution begins and ends there.
-//
-
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -30,12 +27,11 @@ struct Args
 	 return args;
 }
 
-std::string ReplaceString(const std::string& subject,
-	const std::string& searchString, const std::string& replacementString)
+std::string ReplaceString(const std::string& subject, const std::string& searchString, const std::string& replacementString)
 {
 	size_t pos = 0;
 	//Уточнить есть ли инициализация по умолчанию
-	std::string result;
+	std::string result = "";
 	while (pos < subject.length())
 	{
 		size_t foundPos = subject.find(searchString, pos);
