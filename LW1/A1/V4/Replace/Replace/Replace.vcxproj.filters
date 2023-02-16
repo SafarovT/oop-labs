@@ -37,7 +37,7 @@
     <Text Include="fox-replace-dog-with-cat.txt">
       <Filter>test-data</Filter>
     </Text>
-    <Text Include="numbers_1231234_with_4.txt">
+    <Text Include="numbers_123_with_123123.txt">
       <Filter>test-data</Filter>
     </Text>
     <Text Include="empty.txt">

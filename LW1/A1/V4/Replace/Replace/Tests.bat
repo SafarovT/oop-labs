@@ -1,6 +1,5 @@
 set PROGRAM="%~1"
 
-rem При запуске без параметров ожидается ненулевой код возврата
 %PROGRAM% > nul
 if NOT ERRORLEVEL 1 goto err
 
@@ -19,9 +18,9 @@ if ERRORLEVEL 1 goto err
 fc.exe "%TEMP%\fox.txt" fox.txt
 if ERRORLEVEL 1 goto err
 
-%PROGRAM% numbers.txt "%TEMP%\numbers.txt" 1231234 1234
+%PROGRAM% numbers.txt "%TEMP%\numbers.txt" 123 123123
 if ERRORLEVEL 1 goto err
-fc.exe "%TEMP%\numbers.txt" numbers_1231234_with_4.txt
+fc.exe "%TEMP%\numbers.txt" numbers_123_with_123123.txt
 if ERRORLEVEL 1 goto err
 
 %PROGRAM% empty.txt "%TEMP%\empty.txt" 1 2

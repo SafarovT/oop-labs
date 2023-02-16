@@ -164,7 +164,7 @@
     <Text Include="empty.txt" />
     <Text Include="fox-replace-dog-with-cat.txt" />
     <Text Include="fox.txt" />
-    <Text Include="numbers_1231234_with_4.txt" />
+    <Text Include="numbers_123_with_123123.txt" />
     <Text Include="numbers.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
