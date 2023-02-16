@@ -94,6 +94,9 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <PostBuildEvent>
+      <Command>"$(ProjectDir)Tests.bat" "$(TargetPath)"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <ClCompile>
@@ -124,6 +127,9 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
+    <PostBuildEvent>
+      <Command>"$(ProjectDir)Tests.bat" "$(TargetPath)"</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -146,8 +152,12 @@
     <ClCompile Include="InvertMatrix.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <Text Include="..\MultMatrix\MatrixLessNumbers.txt" />
+    <Text Include="..\MultMatrix\MatrixWithLetters.txt" />
     <Text Include="Matrix1.txt" />
-    <Text Include="Matrix2.txt" />
+    <Text Include="Matrix1A.txt" />
+    <Text Include="MatrixWithZeroDeterminant.txt" />
+    <Text Include="ZeroDeterminantOutput.txt" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Tests.bat" />

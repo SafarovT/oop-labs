@@ -37,13 +37,10 @@
     <Text Include="fox-replace-dog-with-cat.txt">
       <Filter>test-data</Filter>
     </Text>
-    <Text Include="numbers_1231234_with_1234.txt">
+    <Text Include="numbers_123_with_123123.txt">
       <Filter>test-data</Filter>
     </Text>
     <Text Include="empty.txt">
-      <Filter>test-data</Filter>
-    </Text>
-    <Text Include="numbers_123_with_123123.txt">
       <Filter>test-data</Filter>
     </Text>
   </ItemGroup>
