@@ -15,23 +15,8 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="InvertMatrix.cpp">
+    <ClCompile Include="crypt.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="Matrix1.txt" />
-    <Text Include="MatrixWithZeroDeterminant.txt" />
-    <Text Include="Matrix1A.txt" />
-    <Text Include="..\MultMatrix\MatrixWithLetters.txt" />
-    <Text Include="..\MultMatrix\MatrixLessNumbers.txt" />
-    <Text Include="ZeroDeterminantOutput.txt" />
-    <Text Include="MatrixXY.txt" />
-    <Text Include="MatrixXYA.txt" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="Tests.bat">
-      <Filter>Source Files</Filter>
-    </None>
   </ItemGroup>
 </Project>

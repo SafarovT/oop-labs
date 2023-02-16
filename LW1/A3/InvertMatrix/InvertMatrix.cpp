@@ -2,13 +2,16 @@
 #include <fstream>
 #include <optional>
 #include <string>
+#include <array>
 
-struct Args
+enum ProgramEndCode
 {
-	std::string inputFileName;
+	Success = 0, Error
 };
 
-std::optional<Args> ParseArgs(int argc, char* argv[])
+using Mat3x3 = std::array<std::array<int, 3>, 3>;
+
+std::optional<std::string> ParseArgs(int argc, char* argv[]) //TODO replace args with string
 {
 	if (argc != 2)
 	{
@@ -16,11 +19,8 @@ std::optional<Args> ParseArgs(int argc, char* argv[])
 			<< "Usage: replace.exe <MatrixFile.txt>\n";
 		return std::nullopt;
 	}
-
-	Args args;
-	args.inputFileName = argv[1];
 	
-	return args;
+	return argv[1];
 }
 
 bool ReadMatrix(std::istream& inputFile, double matrix[3][3])
@@ -130,7 +130,7 @@ void MultMatrixOnNumber(double matrix[3][3], double multiplier)
 	}
 }
 
-void InvertMatrix(double matrix[3][3])
+void InvertMatrix(double matrix[3][3]) // TODO: если мы  назваем ф-ю invert, это не значит, что она будет печатать эту матрицу
 {
 	double determinant = GetDeterminant3By3Matrix(matrix);
 	if (determinant == 0)
@@ -144,33 +144,33 @@ void InvertMatrix(double matrix[3][3])
 	FindTranspose(matrix, transpose);
 	MultMatrixOnNumber(transpose, 1/determinant);
 	WriteMatrix(transpose);
-
-
 }
 
 int main(int argc, char* argv[])
 {
-	auto args = ParseArgs(argc, argv);
-	if (!args)
+	auto inputFilePath = ParseArgs(argc, argv);
+	if (!inputFilePath)
 	{
-		return 1;
+		return ProgramEndCode::Error; // use constant
 	}
 
 	std::ifstream inputFile;
 
-	if (!OpenFile(inputFile, args->inputFileName))
+	if (!OpenFile(inputFile, *inputFilePath))
 	{
-		return 1;
+		return ProgramEndCode::Error;
 	}
 
-	double matrix[3][3];
+	Mat3x3 matrix;
 
 	if (!ReadMatrix(inputFile, matrix))
 	{
-		return 1;
+		return ProgramEndCode::Error;
 	}
 
 	InvertMatrix(matrix);
 	
-	return 0;
+	return ProgramEndCode::Success;
 }
+
+// TODO use std::array

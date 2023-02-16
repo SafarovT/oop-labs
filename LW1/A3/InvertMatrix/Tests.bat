@@ -14,6 +14,7 @@ if NOT ERRORLEVEL 1 goto err
 
 del "%TEMP%\TestingResult1.txt
 del "%TEMP%\TestingResult2.txt
+del "%TEMP%\TestingResult3.txt
 
 REM ѕроверка на корректное нахождение обратной матрицы с корректной изначальной матрицой
 %PROGRAM% Matrix1.txt >> "%TEMP%\TestingResult1.txt"
@@ -26,6 +27,12 @@ REM ѕроверка на определение нулевого определител€
 if ERRORLEVEL 1 goto err
 fc.exe "%TEMP%\TestingResult2.txt" ZeroDeterminantOutput.txt
 if ERRORLEVEL 1 goto err
+
+REM ѕроверка случа€, схожего со случаем работы с координатами в двумерном пространстве
+rem %PROGRAM% MatrixXY.txt >> "%TEMP%\11TestingResult3.txt"
+rem if ERRORLEVEL 1 goto err
+rem fc.exe "%TEMP%\TestingResult3.txt" MatrixXYA.txt
+rem if ERRORLEVEL 1 goto err
 
 echo OK
 exit 0
