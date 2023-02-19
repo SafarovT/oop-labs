@@ -9,9 +9,9 @@ enum ProgramEndCode
 	Success = 0, Error
 };
 
-using Mat3x3 = std::array<std::array<int, 3>, 3>;
+using Mat3x3 = std::array<std::array<double, 3>, 3>;
 
-std::optional<std::string> ParseArgs(int argc, char* argv[]) //TODO replace args with string
+std::optional<std::string> ParseArgs(int argc, char* argv[]) // TODO: replace args with string
 {
 	if (argc != 2)
 	{
@@ -23,8 +23,9 @@ std::optional<std::string> ParseArgs(int argc, char* argv[]) //TODO replace args
 	return argv[1];
 }
 
-bool ReadMatrix(std::istream& inputFile, double matrix[3][3])
+std::optional<Mat3x3> ReadMatrix(std::istream& inputFile)
 {
+	Mat3x3 resultMatrix;
 	double readedValue;
 	for (int i = 0; i < 3; ++i)
 	{
@@ -32,16 +33,16 @@ bool ReadMatrix(std::istream& inputFile, double matrix[3][3])
 		{
 			if (inputFile >> readedValue)
 			{
-				matrix[i][j] = readedValue;
+				resultMatrix[i][j] = readedValue;
 			}
 			else
 			{
 				std::cout << "Please, enter a correst matrix with numbers\n";
-				return false;
+				return std::nullopt;
 			}
 		}
 	}
-	return true;
+	return resultMatrix;
 }
 
 bool OpenFile(std::ifstream& inputFile, std::string filePath)
@@ -57,26 +58,27 @@ bool OpenFile(std::ifstream& inputFile, std::string filePath)
 	return true;
 }
 
-void WriteMatrix(double matrix[3][3])
+void WriteMatrix(Mat3x3 matrix)
 {
 	for (int i = 0; i < 3; ++i)
 	{
 		for (int j = 0; j < 3; ++j)
 		{
-			std::cout << round(matrix[i][j] * 1000) / 1000 << " ";
+			double numberToPrint = round(matrix[i][j] * 1000) / 1000;
+			std::cout << numberToPrint << " ";
 		}
 		std::cout << std::endl;
 	}
 }
 
-double GetDeterminant2By2Matrix(double matrix[2][2])
+double GetDeterminant2By2Matrix(Mat3x3 matrix)
 {
 	return matrix[0][0] * matrix[1][1] - matrix[1][0] * matrix[0][1];
 }
 
-double GetDeterminantOfRemainderMatrix(double matrix[3][3], int x, int y)
+double GetDeterminantOfRemainderMatrix(Mat3x3 matrix, int x, int y)
 {
-	double remainderMatrix[2][2];
+	Mat3x3 remainderMatrix;
 	for (int i = 0, iRemainderMatrix = 0; i < 3; ++i)
 	{
 		if (i != y)
@@ -96,7 +98,7 @@ double GetDeterminantOfRemainderMatrix(double matrix[3][3], int x, int y)
 	return GetDeterminant2By2Matrix(remainderMatrix);
 }
 
-double GetDeterminant3By3Matrix(double matrix[3][3])
+double GetDeterminant3By3Matrix(Mat3x3 matrix)
 {
 	double determinant = 0;
 
@@ -108,8 +110,9 @@ double GetDeterminant3By3Matrix(double matrix[3][3])
 	return determinant;
 }
 
-void FindTranspose(double matrix[3][3], double resultMatrix[3][3])
+Mat3x3 FindTranspose(Mat3x3 matrix)
 {
+	Mat3x3 resultMatrix;
 	for (int i = 0, y = 0; i < 3; ++i)
 	{
 		for (int j = 0, x = 0; j < 3; ++j)
@@ -117,9 +120,11 @@ void FindTranspose(double matrix[3][3], double resultMatrix[3][3])
 			resultMatrix[j][i] = pow(-1, i + j) * GetDeterminantOfRemainderMatrix(matrix, j, i);
 		}
 	}
+
+	return resultMatrix;
 }
 
-void MultMatrixOnNumber(double matrix[3][3], double multiplier)
+void MultMatrixOnNumber(Mat3x3 &matrix, double multiplier)
 {
 	for (int i = 0; i < 3; ++i)
 	{
@@ -130,20 +135,20 @@ void MultMatrixOnNumber(double matrix[3][3], double multiplier)
 	}
 }
 
-void InvertMatrix(double matrix[3][3]) // TODO: если мы  назваем ф-ю invert, это не значит, что она будет печатать эту матрицу
+bool InvertMatrix(Mat3x3 &matrix) // TODO: если мы  назваем ф-ю invert, это не значит, что она будет печатать эту матрицу
 {
 	double determinant = GetDeterminant3By3Matrix(matrix);
 	if (determinant == 0)
 	{
 		std::cout << "Impossible to invert matrix: determinant is equal to 0\n";
 
-		return;
+		return false;
 	}
 
-	double transpose[3][3];
-	FindTranspose(matrix, transpose);
-	MultMatrixOnNumber(transpose, 1/determinant);
-	WriteMatrix(transpose);
+	matrix = FindTranspose(matrix);
+	MultMatrixOnNumber(matrix, 1/determinant);
+
+	return true;
 }
 
 int main(int argc, char* argv[])
@@ -161,14 +166,17 @@ int main(int argc, char* argv[])
 		return ProgramEndCode::Error;
 	}
 
-	Mat3x3 matrix;
+	auto matrix = ReadMatrix(inputFile);
 
-	if (!ReadMatrix(inputFile, matrix))
+	if (!matrix)
 	{
 		return ProgramEndCode::Error;
 	}
 
-	InvertMatrix(matrix);
+	if (InvertMatrix(*matrix)) {
+		WriteMatrix(*matrix);
+	}
+
 	
 	return ProgramEndCode::Success;
 }

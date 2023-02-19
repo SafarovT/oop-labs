@@ -12,27 +12,26 @@ REM ¬вод некоректной матрицы с недостаточным количеством значений
 %PROGRAM% MatrixLessNumbers.txt
 if NOT ERRORLEVEL 1 goto err
 
-del "%TEMP%\TestingResult1.txt
-del "%TEMP%\TestingResult2.txt
-del "%TEMP%\TestingResult3.txt
-
 REM ѕроверка на корректное нахождение обратной матрицы с корректной изначальной матрицой
 %PROGRAM% Matrix1.txt >> "%TEMP%\TestingResult1.txt"
 if ERRORLEVEL 1 goto err
 fc.exe "%TEMP%\TestingResult1.txt" Matrix1A.txt
+del "%TEMP%\TestingResult1.txt
 if ERRORLEVEL 1 goto err
 
 REM ѕроверка на определение нулевого определител€
 %PROGRAM% MatrixWithZeroDeterminant.txt >> "%TEMP%\TestingResult2.txt"
 if ERRORLEVEL 1 goto err
 fc.exe "%TEMP%\TestingResult2.txt" ZeroDeterminantOutput.txt
+del "%TEMP%\TestingResult2.txt
 if ERRORLEVEL 1 goto err
 
-REM ѕроверка случа€, схожего со случаем работы с координатами в двумерном пространстве
-rem %PROGRAM% MatrixXY.txt >> "%TEMP%\11TestingResult3.txt"
-rem if ERRORLEVEL 1 goto err
-rem fc.exe "%TEMP%\TestingResult3.txt" MatrixXYA.txt
-rem if ERRORLEVEL 1 goto err
+REM ѕроверка случа€ c округлением отрицательного < 0.5 числа до 0
+%PROGRAM% MatrixXY.txt >> "%TEMP%\TestingResult3.txt"
+if ERRORLEVEL 1 goto err
+fc.exe "%TEMP%\TestingResult3.txt" MatrixXYA.txt
+del "%TEMP%\TestingResult3.txt
+if ERRORLEVEL 1 goto err
 
 echo OK
 exit 0
