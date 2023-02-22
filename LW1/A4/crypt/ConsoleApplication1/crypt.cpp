@@ -15,13 +15,13 @@ enum ReturnCode
 
 struct Args
 {
-    WorkMode workMode {};
+    WorkMode workMode;
     std::string inputFilePath;
     std::string outputFilePath;
-    unsigned char byte {};
+    char key;
 };
 
-std::optional<unsigned char> ReadByte(std::string numberText)
+std::optional<char> ReadByte(std::string numberText)
 {
     int byte = 0;
     std::string errorMessage = "Please, enter a key in [0, 255]";
@@ -44,7 +44,7 @@ std::optional<unsigned char> ReadByte(std::string numberText)
         std::cout << errorMessage;
         return std::nullopt;
     }
-    return static_cast<unsigned char>(byte);
+    return static_cast<char>(byte);
 }
 
 std::optional<Args> ParseArgs(int argc, char* argv[])
@@ -79,7 +79,7 @@ std::optional<Args> ParseArgs(int argc, char* argv[])
     }
     else
     {
-        args.byte = *readedByte;
+        args.key = *readedByte;
         return args;
     }
 }
@@ -119,9 +119,14 @@ bool IsWorkWithFilesFailed(std::ifstream& inputFile, std::ofstream& outputFile)
     return false;
 }
 
-void CopyFileCrypted()
+void CopyFileCrypted(std::ifstream& inputFile, std::ofstream& outputFile, char key)
 {
-
+    char readedByte;
+    while (inputFile.get(readedByte))
+    {
+        char newReadedByte = readedByte ^ key;
+        std::cout << readedByte << " -> " << newReadedByte << std::endl;
+    }
 }
 
 int main(int argc, char* argv[])
@@ -144,7 +149,7 @@ int main(int argc, char* argv[])
     {
     case WorkMode::Crypt:
     {
-        std::cout << "in E\n";
+        CopyFileCrypted(inputFile, outputFile, args->key);
 
         break;
     }
