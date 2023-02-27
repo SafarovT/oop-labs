@@ -10,7 +10,7 @@ enum WorkMode
     Crypt = 0, Decrypt = 1
 };
 
-enum ReturnCode
+enum ProgramEndCode
 {
     Success = 0, Error = 1
 };
@@ -176,7 +176,7 @@ int main(int argc, char* argv[])
     auto args = ParseArgs(argc, argv);
     if (!args)
     {
-        return ReturnCode::Error;
+        return ProgramEndCode::Error;
     }
 
     std::ifstream inputFile;
@@ -184,7 +184,7 @@ int main(int argc, char* argv[])
 
     if (!OpenFiles(inputFile, outputFile, args->inputFilePath, args->outputFilePath))
     {
-        return ReturnCode::Error;
+        return ProgramEndCode::Error;
     }
 
     switch (args->workMode)
@@ -203,8 +203,8 @@ int main(int argc, char* argv[])
 
     if (IsWorkWithFilesFailed(inputFile, outputFile))
     {
-        return ReturnCode::Error;
+        return ProgramEndCode::Error;
     }
 
-    return ReturnCode::Success;
+    return ProgramEndCode::Success;
 }
