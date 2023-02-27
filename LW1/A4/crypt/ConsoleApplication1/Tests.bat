@@ -1,8 +1,23 @@
 set PROGRAM="%~1"
-rem set deleleFilesMacro = del "%TEMP%\CryptedFile.txt" del "%TEMP%\DecryptedFile.txt"
 
-REM При запуске без достаточного количества параметров ожидается ненулевой код возврата
+REM При запуске без достаточного количества параметров, ожидается ненулевой код возврата
 %PROGRAM% crypt TextToCrypt.txt "%TEMP%\CryptedFile.txt"
+if NOT ERRORLEVEL 1 goto err
+
+REM Запуск с ключем вне диапазона, ожидается ненулевой код возврата
+%PROGRAM% crypt TextToCrypt.txt "%TEMP%\CryptedFile.txt" 128
+if NOT ERRORLEVEL 1 goto err
+
+REM Запуск с ключем вне диапазона, ожидается ненулевой код возврата
+%PROGRAM% crypt TextToCrypt.txt "%TEMP%\CryptedFile.txt" -128
+if NOT ERRORLEVEL 1 goto err
+
+REM Запуск с ключем заданным не в виде числа, ожидается ненулевой код возврата
+%PROGRAM% crypt TextToCrypt.txt "%TEMP%\CryptedFile.txt" abcdefg
+if NOT ERRORLEVEL 1 goto err
+
+REM Запуск с неизвестным режимом работы, ожидается ненулевой код возврата
+%PROGRAM% uncrypt TextToCrypt.txt "%TEMP%\CryptedFile.txt" abcdefg
 if NOT ERRORLEVEL 1 goto err
 
 REM Проверка шифрования и дешифрования файла со случайными символами

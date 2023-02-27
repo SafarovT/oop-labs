@@ -3,6 +3,25 @@
 #include <optional>
 #include <cmath>
 #include <string>
+#include <array>
+
+struct BitRoute
+{
+    int fromIndex;
+    int toIndex;
+};
+
+std::array<BitRoute, 8> BitRoutes = 
+{{
+    {3 ,2},
+    {4, 5},
+    {3 ,2},
+    {4, 5},
+    {3 ,2},
+    {4, 5},
+    {3 ,2},
+    {4, 5}
+}};
 
 enum WorkMode
 {
@@ -201,9 +220,6 @@ int main(int argc, char* argv[])
         CopyFileDecrypted(inputFile, outputFile, args->key);
     }
     }
-
-    char ch = 0b01011010;
-    std::cout << ch;
 
     if (IsWorkWithFilesFailed(inputFile, outputFile))
     {
