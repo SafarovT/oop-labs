@@ -5,24 +5,6 @@
 #include <string>
 #include <array>
 
-struct BitRoute
-{
-    int fromIndex;
-    int toIndex;
-};
-
-std::array<BitRoute, 8> BitRoutes = 
-{{
-    {3 ,2},
-    {4, 5},
-    {3 ,2},
-    {4, 5},
-    {3 ,2},
-    {4, 5},
-    {3 ,2},
-    {4, 5}
-}};
-
 enum WorkMode
 {
     Crypt = 0, Decrypt = 1
@@ -156,8 +138,6 @@ void shuffleBitsBack(char& byte)
 void shuffleBits(char& byte)
 {
     char resultedByte = 0;
-    // int i = 0;
-    // static_cast<char>(pow(2, i++))
     resultedByte |= (byte & 0b00000001) << 2;
     resultedByte |= (byte & 0b00000010) << 2;
     resultedByte |= (byte & 0b00000100) << 2;
