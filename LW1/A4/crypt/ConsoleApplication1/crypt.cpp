@@ -1,6 +1,7 @@
 #include <fstream>
 #include <iostream>
 #include <optional>
+#include <cmath>
 #include <string>
 
 enum WorkMode
@@ -10,7 +11,7 @@ enum WorkMode
 
 enum ReturnCode
 {
-    Success = 0, Error = 0
+    Success = 0, Error = 1
 };
 
 struct Args
@@ -39,7 +40,7 @@ std::optional<char> ReadByte(std::string numberText)
         std::cout << errorMessage;
         return std::nullopt;
     }
-    if (!(byte >= 0 && byte <= 255))
+    if (!(byte >= -127 && byte <= 127))
     {
         std::cout << errorMessage;
         return std::nullopt;
@@ -119,13 +120,55 @@ bool IsWorkWithFilesFailed(std::ifstream& inputFile, std::ofstream& outputFile)
     return false;
 }
 
+void shuffleBitsBack(char& byte)
+{
+    char resultedByte = 0;
+    resultedByte |= (byte & 0b00000001) << 5;
+    resultedByte |= (byte & 0b00000010) << 5;
+    resultedByte |= (byte & 0b00000100) >> 2;
+    resultedByte |= (byte & 0b00001000) >> 2;
+    resultedByte |= (byte & 0b00010000) >> 2;
+    resultedByte |= (byte & 0b00100000) << 2;
+    resultedByte |= (byte & 0b01000000) >> 3;
+    resultedByte |= (byte & 0b10000000) >> 3;
+    byte = resultedByte;
+}
+
+void shuffleBits(char& byte)
+{
+    char resultedByte = 0;
+    // int i = 0;
+    // static_cast<char>(pow(2, i++))
+    resultedByte |= (byte & 0b00000001) << 2;
+    resultedByte |= (byte & 0b00000010) << 2;
+    resultedByte |= (byte & 0b00000100) << 2;
+    resultedByte |= (byte & 0b00001000) << 3;
+    resultedByte |= (byte & 0b00010000) << 3;
+    resultedByte |= (byte & 0b00100000) >> 5;
+    resultedByte |= (byte & 0b01000000) >> 5;
+    resultedByte |= (byte & 0b10000000) >> 2;
+    byte = resultedByte;
+}
+
 void CopyFileCrypted(std::ifstream& inputFile, std::ofstream& outputFile, char key)
 {
     char readedByte;
     while (inputFile.get(readedByte))
     {
-        char newReadedByte = readedByte ^ key;
-        std::cout << readedByte << " -> " << newReadedByte << std::endl;
+        readedByte ^= key;
+        shuffleBits(readedByte);
+        outputFile << readedByte;
+    }
+}
+
+void CopyFileDecrypted(std::ifstream& inputFile, std::ofstream& outputFile, char key)
+{
+    char readedByte;
+    while (inputFile.get(readedByte))
+    {
+        shuffleBitsBack(readedByte);
+        readedByte ^= key; 
+        outputFile << readedByte;
     }
 }
 
@@ -155,9 +198,12 @@ int main(int argc, char* argv[])
     }
     case WorkMode::Decrypt:
     {
-        std::cout << "in DE";
+        CopyFileDecrypted(inputFile, outputFile, args->key);
     }
     }
+
+    char ch = 0b01011010;
+    std::cout << ch;
 
     if (IsWorkWithFilesFailed(inputFile, outputFile))
     {
