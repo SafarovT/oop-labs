@@ -22,7 +22,7 @@ struct Args
 
 std::optional<Args> ParseArgs(int argc, char* argv[])
 {
-    if (argc != 2)
+    if (argc != 3)
     {
         std::cout << "Invalid argument count\n"
             << "Usage: fill.exe <inputFile.txt> <outputFile.txt>\n";
@@ -70,12 +70,24 @@ bool IsWorkWithFilesFailed(std::ifstream& inputFile, std::ofstream& outputFile)
     return false;
 }
 
+void PrintCanvas(std::ofstream& outputFile, Canvas& canvas)
+{
+    for (size_t i = 0; i < maxSizeY; ++i)
+    {
+        for (size_t j = 0; j < maxSizeY; ++j)
+        {
+            outputFile << canvas[i][j];
+        }
+        outputFile << std::endl;
+    }
+}
+
 Canvas ReadCanvas(std::ifstream& inputFile)
 {
     Canvas canvas;
-    char defaultValue = ' ';
-    std::fill(canvas.begin(), canvas.end(), ' ');
-    //std::fill(&canvas[0][0], canvas[0][0] + maxSizeX * maxSizeY, ' ')
+    std::fill(&canvas[0][0], &canvas[0][0] + sizeof(canvas), ' ');
+
+    return canvas;
 }
 
 int main(int argc, char* argv[])
@@ -94,7 +106,8 @@ int main(int argc, char* argv[])
         return ProgramEndCode::Error;
     }
 
-    // Do something
+    Canvas canvas = ReadCanvas(inputFile);
+    PrintCanvas(outputFile, canvas);
 
     if (IsWorkWithFilesFailed(inputFile, outputFile))
     {
