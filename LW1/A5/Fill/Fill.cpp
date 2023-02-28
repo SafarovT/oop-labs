@@ -3,16 +3,24 @@
 #include <string>
 #include <fstream>
 #include <array>
+#include <vector>
 
 enum ProgramEndCode
 {
     Success = 0, Error = 1
 };
 
+struct Coordinates
+{
+    size_t x;
+    size_t y;
+};
+
 const size_t maxSizeX = 100;
 const size_t maxSizeY = 100;
 
 using Canvas = std::array<std::array<char, maxSizeY>, maxSizeX>;
+using CoordinatesVector = std::vector<Coordinates>;
 
 struct Args
 {
@@ -82,7 +90,7 @@ void PrintCanvas(std::ofstream& outputFile, Canvas& canvas)
     }
 }
 
-Canvas ReadCanvas(std::ifstream& inputFile)
+Canvas ReadCanvasForFilling(std::ifstream& inputFile, CoordinatesVector& startFillingCoordinates)
 {
     Canvas canvas;
     std::fill(&canvas[0][0], &canvas[0][0] + sizeof(canvas), ' ');
@@ -90,8 +98,16 @@ Canvas ReadCanvas(std::ifstream& inputFile)
     std::string readedLine;
     while (i < maxSizeY && std::getline(inputFile, readedLine))
     {
-        // добавить проверку на xMaxSize
-        for (size_t j = *readedLine.begin(); *readedLine.end(); j++) canvas[i][j] = 
+        size_t j = 0;
+        while (j < maxSizeX && j < readedLine.length() && !(readedLine[j] = '\r' || readedLine[j] == '\n'))
+        {
+            canvas[i][j] = readedLine[j];
+            j++;
+            if (readedLine[j] == 'O')
+            {
+                startFillingCoordinates.push_back({j, i});
+            }
+        }
         i++;
     }
 
@@ -114,7 +130,8 @@ int main(int argc, char* argv[])
         return ProgramEndCode::Error;
     }
 
-    Canvas canvas = ReadCanvas(inputFile);
+    CoordinatesVector startFillingCoordinates;
+    Canvas canvas = ReadCanvasForFilling(inputFile, startFillingCoordinates);
     PrintCanvas(outputFile, canvas);
 
     if (IsWorkWithFilesFailed(inputFile, outputFile))
