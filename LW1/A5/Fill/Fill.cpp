@@ -86,6 +86,14 @@ Canvas ReadCanvas(std::ifstream& inputFile)
 {
     Canvas canvas;
     std::fill(&canvas[0][0], &canvas[0][0] + sizeof(canvas), ' ');
+    size_t i = 0;
+    std::string readedLine;
+    while (i < maxSizeY && std::getline(inputFile, readedLine))
+    {
+        // добавить проверку на xMaxSize
+        for (size_t j = *readedLine.begin(); *readedLine.end(); j++) canvas[i][j] = 
+        i++;
+    }
 
     return canvas;
 }
