@@ -18,6 +18,7 @@ struct Coordinates
 
 const size_t maxSizeX = 100;
 const size_t maxSizeY = 100;
+const char symbolToFillWith = '—';
 
 using Canvas = std::array<std::array<char, maxSizeY>, maxSizeX>;
 using CoordinatesVector = std::vector<Coordinates>;
@@ -120,9 +121,10 @@ void FillLine(Canvas& canvas, size_t x1, size_t x2, size_t y)
 
     if (y > maxSizeY)
         return;
+
     for (xLeft = x1; xLeft <= maxSizeX && canvas[y][xLeft] == ' '; --xLeft)
     {
-        canvas[y][xLeft] = '_';
+        canvas[y][xLeft] = symbolToFillWith;
     }
     if (xLeft < x1) {
         FillLine(canvas, xLeft, x1, y - 1); // fill child
@@ -131,20 +133,23 @@ void FillLine(Canvas& canvas, size_t x1, size_t x2, size_t y)
     }
     for (xRight = x2; xRight <= maxSizeX && canvas[y][xRight] == ' '; ++xRight)
     { // scan right
-        canvas[y][xRight] = '_';
+        canvas[y][xRight] = symbolToFillWith;
     }
-    if (xRight > x2) {
+    if (xRight > x2 && xRight <= maxSizeX) {
+        std::cout << xRight;
         FillLine(canvas, x2, xRight, y - 1); // fill child
         FillLine(canvas, x2, xRight, y + 1); // fill child
         --x2;
     }
     for (xRight = x1; xRight <= x2 && xRight <= maxSizeX; ++xRight) {  // scan between
         if (canvas[y][xRight])
-            canvas[y][xRight] = '_';
+        {
+            if (canvas[y][xRight] == ' ') canvas[y][xRight] = symbolToFillWith;
+        }
         else
         {
             if (x1 < xRight) {
-                // fill child
+                // fill child  
                 FillLine(canvas, x1, xRight - 1, y - 1);
                 // fill child
                 FillLine(canvas, x1, xRight - 1, y + 1);
@@ -232,7 +237,7 @@ int main(int argc, char* argv[])
 
     CoordinatesVector seedsCoordinates;
     Canvas canvas = ReadCanvasForFilling(inputFile, seedsCoordinates);
-    FillLine(canvas, seedsCoordinates[0].x - 1, seedsCoordinates[0].x + 1, seedsCoordinates[0].y);
+    FillLine(canvas, seedsCoordinates[0].x - 1, seedsCoordinates[0].x, seedsCoordinates[0].y);
     PrintCanvas(outputFile, canvas);
 
     if (IsWorkWithFilesFailed(inputFile, outputFile))
