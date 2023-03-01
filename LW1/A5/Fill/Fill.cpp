@@ -90,7 +90,7 @@ void PrintCanvas(std::ofstream& outputFile, Canvas& canvas)
     }
 }
 
-Canvas ReadCanvasForFilling(std::ifstream& inputFile, CoordinatesVector& startFillingCoordinates)
+Canvas ReadCanvasForFilling(std::ifstream& inputFile, CoordinatesVector& seedsCoordinates)
 {
     Canvas canvas;
     std::fill(&canvas[0][0], &canvas[0][0] + sizeof(canvas), ' ');
@@ -99,13 +99,13 @@ Canvas ReadCanvasForFilling(std::ifstream& inputFile, CoordinatesVector& startFi
     while (i < maxSizeY && std::getline(inputFile, readedLine))
     {
         size_t j = 0;
-        while (j < maxSizeX && j < readedLine.length() && !(readedLine[j] = '\r' || readedLine[j] == '\n'))
+        while (j < maxSizeX && j < readedLine.length() && !(readedLine[j] == '\r' || readedLine[j] == '\n'))
         {
             canvas[i][j] = readedLine[j];
             j++;
             if (readedLine[j] == 'O')
             {
-                startFillingCoordinates.push_back({j, i});
+                seedsCoordinates.push_back({j, i});
             }
         }
         i++;
@@ -113,6 +113,106 @@ Canvas ReadCanvasForFilling(std::ifstream& inputFile, CoordinatesVector& startFi
 
     return canvas;
 }
+
+void FillLine(Canvas& canvas, size_t x1, size_t x2, size_t y)
+{
+    size_t xLeft, xRight;
+
+    if (y > maxSizeY)
+        return;
+    for (xLeft = x1; xLeft <= maxSizeX && canvas[y][xLeft] == ' '; --xLeft)
+    {
+        canvas[y][xLeft] = '_';
+    }
+    if (xLeft < x1) {
+        FillLine(canvas, xLeft, x1, y - 1); // fill child
+        FillLine(canvas, xLeft, x1, y + 1); // fill child
+        ++x1;
+    }
+    for (xRight = x2; xRight <= maxSizeX && canvas[y][xRight] == ' '; ++xRight)
+    { // scan right
+        canvas[y][xRight] = '_';
+    }
+    if (xRight > x2) {
+        FillLine(canvas, x2, xRight, y - 1); // fill child
+        FillLine(canvas, x2, xRight, y + 1); // fill child
+        --x2;
+    }
+    for (xRight = x1; xRight <= x2 && xRight <= maxSizeX; ++xRight) {  // scan between
+        if (canvas[y][xRight])
+            canvas[y][xRight] = '_';
+        else
+        {
+            if (x1 < xRight) {
+                // fill child
+                FillLine(canvas, x1, xRight - 1, y - 1);
+                // fill child
+                FillLine(canvas, x1, xRight - 1, y + 1);
+                x1 = xRight;
+            }
+            // Note: This function still works if this step is removed.
+            for (; xRight <= x2 && xRight <= maxSizeX; ++xRight) { // skip over border
+                if (canvas[y][xRight] == ' ') {
+                    x1 = xRight--;
+                    break;
+                }
+            }
+        }
+    }
+}
+
+/*bool IsPushInStackPossible(std::stack<LineSegment>& stack, size_t y, size_t dy)
+{
+    return stack.size() < std::numeric_limits<std::deque<LineSegment>::size_type>::max() && y + dy <= maxSizeY;
+}
+
+void FillCanvasFromSeed(Canvas& canvas, size_t x, size_t y)
+{
+    size_t left, x1, x2;
+    int dy;
+
+    std::stack<LineSegment> stack;
+
+    stack.push({ x, x, y, 1 });
+    stack.push({ x, x, y + 1, -1 });
+
+
+    while (!stack.empty()) {
+        LineSegment line = stack.top();
+        x1 = line.x1;
+        x2 = line.x2;
+        y = line.y;
+        dy = line.dy;
+        stack.pop();
+
+        for (x = line.x1; canvas[y][x] = ' '; --x)
+            canvas[y][x] = ' ';
+
+        if (x >= x1)
+            goto SKIP;
+
+        left = x + 1;
+        if (left < x1 && IsPushInStackPossible(stack, y, dy))
+            PUSH(y, left, x1 - 1, -dy);
+
+        x = x1 + 1;
+
+        do {
+            for (; x <= nMaxX && GetPixel(x, y) == old_color; ++x)
+                SetPixel(x, y, new_color);
+
+            PUSH(left, x - 1, y, dy);
+
+            if (x > x2 + 1)
+                PUSH(x2 + 1, x - 1, y, -dy);
+
+        SKIP:        for (++x; x <= x2 && GetPixel(x, y) != old_color; ++x) { ; }
+
+            left = x;
+        } while (x <= x2);
+    }
+}*/
+
 
 int main(int argc, char* argv[])
 {
@@ -130,8 +230,9 @@ int main(int argc, char* argv[])
         return ProgramEndCode::Error;
     }
 
-    CoordinatesVector startFillingCoordinates;
-    Canvas canvas = ReadCanvasForFilling(inputFile, startFillingCoordinates);
+    CoordinatesVector seedsCoordinates;
+    Canvas canvas = ReadCanvasForFilling(inputFile, seedsCoordinates);
+    FillLine(canvas, seedsCoordinates[0].x - 1, seedsCoordinates[0].x + 1, seedsCoordinates[0].y);
     PrintCanvas(outputFile, canvas);
 
     if (IsWorkWithFilesFailed(inputFile, outputFile))

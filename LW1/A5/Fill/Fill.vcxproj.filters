@@ -21,6 +21,7 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="Test1.txt" />
+    <Text Include="SimpleTest.txt" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Tests.bat">
