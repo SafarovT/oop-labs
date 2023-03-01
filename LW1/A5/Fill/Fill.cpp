@@ -100,14 +100,14 @@ Canvas ReadCanvasForFilling(std::ifstream& inputFile, CoordinatesVector& seedsCo
     while (i < maxSizeY && std::getline(inputFile, readedLine))
     {
         size_t j = 0;
-        while (j < maxSizeX && j < readedLine.length() && !(readedLine[j] == '\r' || readedLine[j] == '\n'))
+        while (j < maxSizeX && j < readedLine.length() && !(readedLine[j] == '\r' || readedLine[j] == '\n' || readedLine[j] == '\r\n'))
         {
             canvas[i][j] = readedLine[j];
-            j++;
             if (readedLine[j] == 'O')
             {
-                seedsCoordinates.push_back({j, i});
+                seedsCoordinates.push_back({ j, i });
             }
+            j++;
         }
         i++;
     }
