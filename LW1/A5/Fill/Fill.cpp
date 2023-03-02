@@ -4,6 +4,7 @@
 #include <fstream>
 #include <array>
 #include <vector>
+#include <stack>
 
 enum ProgramEndCode
 {
@@ -115,109 +116,68 @@ Canvas ReadCanvasForFilling(std::ifstream& inputFile, CoordinatesVector& seedsCo
     return canvas;
 }
 
-void FillLine(Canvas& canvas, size_t x1, size_t x2, size_t y)
+/*void FillFigure(Canvas& canvas, size_t x, size_t y)
 {
-    size_t xLeft, xRight;
-
-    if (y > maxSizeY)
-        return;
-
-    for (xLeft = x1; xLeft <= maxSizeX && canvas[y][xLeft] == ' '; --xLeft)
+    if (x < maxSizeX && y <= maxSizeY && (canvas[y][x] == ' ' || canvas[y][x] == 'O'))
     {
-        canvas[y][xLeft] = symbolToFillWith;
-    }
-    if (xLeft < x1) {
-        FillLine(canvas, xLeft, x1, y - 1); // fill child
-        FillLine(canvas, xLeft, x1, y + 1); // fill child
-        ++x1;
-    }
-    for (xRight = x2; xRight <= maxSizeX && canvas[y][xRight] == ' '; ++xRight)
-    { // scan right
-        canvas[y][xRight] = symbolToFillWith;
-    }
-    if (xRight > x2 && xRight <= maxSizeX) {
-        std::cout << xRight;
-        FillLine(canvas, x2, xRight, y - 1); // fill child
-        FillLine(canvas, x2, xRight, y + 1); // fill child
-        --x2;
-    }
-    for (xRight = x1; xRight <= x2 && xRight <= maxSizeX; ++xRight) {  // scan between
-        if (canvas[y][xRight])
-        {
-            if (canvas[y][xRight] == ' ') canvas[y][xRight] = symbolToFillWith;
-        }
-        else
-        {
-            if (x1 < xRight) {
-                // fill child  
-                FillLine(canvas, x1, xRight - 1, y - 1);
-                // fill child
-                FillLine(canvas, x1, xRight - 1, y + 1);
-                x1 = xRight;
-            }
-            // Note: This function still works if this step is removed.
-            for (; xRight <= x2 && xRight <= maxSizeX; ++xRight) { // skip over border
-                if (canvas[y][xRight] == ' ') {
-                    x1 = xRight--;
-                    break;
-                }
-            }
-        }
-    }
-}
-
-/*bool IsPushInStackPossible(std::stack<LineSegment>& stack, size_t y, size_t dy)
-{
-    return stack.size() < std::numeric_limits<std::deque<LineSegment>::size_type>::max() && y + dy <= maxSizeY;
-}
-
-void FillCanvasFromSeed(Canvas& canvas, size_t x, size_t y)
-{
-    size_t left, x1, x2;
-    int dy;
-
-    std::stack<LineSegment> stack;
-
-    stack.push({ x, x, y, 1 });
-    stack.push({ x, x, y + 1, -1 });
-
-
-    while (!stack.empty()) {
-        LineSegment line = stack.top();
-        x1 = line.x1;
-        x2 = line.x2;
-        y = line.y;
-        dy = line.dy;
-        stack.pop();
-
-        for (x = line.x1; canvas[y][x] = ' '; --x)
-            canvas[y][x] = ' ';
-
-        if (x >= x1)
-            goto SKIP;
-
-        left = x + 1;
-        if (left < x1 && IsPushInStackPossible(stack, y, dy))
-            PUSH(y, left, x1 - 1, -dy);
-
-        x = x1 + 1;
-
-        do {
-            for (; x <= nMaxX && GetPixel(x, y) == old_color; ++x)
-                SetPixel(x, y, new_color);
-
-            PUSH(left, x - 1, y, dy);
-
-            if (x > x2 + 1)
-                PUSH(x2 + 1, x - 1, y, -dy);
-
-        SKIP:        for (++x; x <= x2 && GetPixel(x, y) != old_color; ++x) { ; }
-
-            left = x;
-        } while (x <= x2);
+        if (canvas[y][x] == ' ') canvas[y][x] = symbolToFillWith;
+        FillFigure(canvas, x + 1, y);
+        FillFigure(canvas, x - 1, y);
+        FillFigure(canvas, x, y + 1);
+        FillFigure(canvas, x, y - 1);
     }
 }*/
 
+void FillFigure(Canvas& canvas, size_t startX, size_t startY)
+{
+    //std::numeric_limits<std::deque<LineSegment>::size_type>::max()
+    std::stack<Coordinates> stack;
+    stack.push({startX, startY});
+    while (!stack.empty())
+    {
+        Coordinates point = stack.top();
+        stack.pop();
+        size_t y1 = point.y;
+
+        while (y1 < maxSizeX && canvas[y1][point.x] == ' ') y1--;
+        y1++;
+
+        size_t spanLeft = 0; size_t spanRight = 0;
+        while (y1 < maxSizeY && canvas[y1][point.x] == ' ')
+        {
+            canvas[y1][point.x] = symbolToFillWith;
+            if (spanLeft == 0 && point.x < maxSizeX && canvas[y1][point.x - 1] == ' ')
+            {
+                stack.push({point.x - 1, y1});
+                spanLeft = 1;
+            }
+            else if (spanLeft == 1 && point.x < maxSizeX && canvas[y1][point.x - 1] != ' ')
+            {
+                spanLeft = 0;
+            }
+
+            if (spanRight == 0 && point.x < maxSizeX && canvas[y1][point.x + 1] == ' ')
+            {
+                stack.push({ point.x + 1, y1 });
+                spanRight = 1;
+            }
+            else if (spanRight == 1 && point.x < maxSizeX && canvas[y1][point.x + 1] != ' ')
+            {
+                spanRight = 0;
+            }
+
+            y1++;
+        }
+    }
+}
+
+void FillAllSeeds(Canvas& canvas, CoordinatesVector& seeds)
+{
+    for (auto i = seeds.begin(); i != seeds.end(); i++)
+    {
+        FillFigure(canvas, seeds[i].x, seeds[i].y);
+    }
+}
 
 int main(int argc, char* argv[])
 {
@@ -237,7 +197,7 @@ int main(int argc, char* argv[])
 
     CoordinatesVector seedsCoordinates;
     Canvas canvas = ReadCanvasForFilling(inputFile, seedsCoordinates);
-    FillLine(canvas, seedsCoordinates[0].x - 1, seedsCoordinates[0].x, seedsCoordinates[0].y);
+    FillFigure(canvas, seedsCoordinates[0].x, seedsCoordinates[0].y);
     PrintCanvas(outputFile, canvas);
 
     if (IsWorkWithFilesFailed(inputFile, outputFile))

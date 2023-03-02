@@ -6,7 +6,7 @@ if NOT ERRORLEVEL 1 goto err
 
 del "%TEMP%\!TestOutput.txt
 
-%PROGRAM% SimpleTest.txt "%TEMP%\!TestOutput.txt"
+%PROGRAM% SimpleTest2.txt "%TEMP%\!TestOutput.txt"
 if ERRORLEVEL 1 goto err
 
 echo OK
