@@ -19,7 +19,9 @@ struct Coordinates
 
 const size_t maxSizeX = 100;
 const size_t maxSizeY = 100;
+const char symbolToReplaceByFill = ' ';
 const char symbolToFillWith = '—';
+const char seedSymbol = 'O';
 
 using Canvas = std::array<std::array<char, maxSizeY>, maxSizeX>;
 using CoordinatesVector = std::vector<Coordinates>;
@@ -95,7 +97,7 @@ void PrintCanvas(std::ofstream& outputFile, Canvas& canvas)
 Canvas ReadCanvasForFilling(std::ifstream& inputFile, CoordinatesVector& seedsCoordinates)
 {
     Canvas canvas;
-    std::fill(&canvas[0][0], &canvas[0][0] + sizeof(canvas), ' ');
+    std::fill(&canvas[0][0], &canvas[0][0] + sizeof(canvas), symbolToReplaceByFill);
     size_t i = 0;
     std::string readedLine;
     while (i < maxSizeY && std::getline(inputFile, readedLine))
@@ -104,7 +106,7 @@ Canvas ReadCanvasForFilling(std::ifstream& inputFile, CoordinatesVector& seedsCo
         while (j < maxSizeX && j < readedLine.length() && !(readedLine[j] == '\r' || readedLine[j] == '\n' || readedLine[j] == '\r\n'))
         {
             canvas[i][j] = readedLine[j];
-            if (readedLine[j] == 'O')
+            if (readedLine[j] == seedSymbol)
             {
                 seedsCoordinates.push_back({ j, i });
             }
@@ -118,7 +120,7 @@ Canvas ReadCanvasForFilling(std::ifstream& inputFile, CoordinatesVector& seedsCo
 
 void FillFigure(Canvas& canvas, size_t startX, size_t startY)
 {
-    canvas[startY][startX] = ' ';
+    canvas[startY][startX] = symbolToReplaceByFill;
     std::stack<Coordinates> stack;
     stack.push({startX, startY});
     while (!stack.empty() && stack.size() != std::numeric_limits<std::deque<Coordinates>::size_type>::max())
@@ -127,29 +129,29 @@ void FillFigure(Canvas& canvas, size_t startX, size_t startY)
         stack.pop();
         size_t y1 = point.y;
 
-        while (y1 < maxSizeX && canvas[y1][point.x] == ' ') y1--;
+        while (y1 < maxSizeX && canvas[y1][point.x] == symbolToReplaceByFill) y1--;
         y1++;
 
         size_t spanLeft = 0; size_t spanRight = 0;
-        while (y1 < maxSizeY && canvas[y1][point.x] == ' ')
+        while (y1 < maxSizeY && canvas[y1][point.x] == symbolToReplaceByFill)
         {
             canvas[y1][point.x] = symbolToFillWith;
-            if (spanLeft == 0 && point.x - 1 < maxSizeX && canvas[y1][point.x - 1] == ' ')
+            if (spanLeft == 0 && point.x - 1 < maxSizeX && canvas[y1][point.x - 1] == symbolToReplaceByFill)
             {
                 stack.push({point.x - 1, y1});
                 spanLeft = 1;
             }
-            else if (spanLeft == 1 && point.x - 1 < maxSizeX && canvas[y1][point.x - 1] != ' ')
+            else if (spanLeft == 1 && point.x - 1 < maxSizeX && canvas[y1][point.x - 1] != symbolToReplaceByFill)
             {
                 spanLeft = 0;
             }
 
-            if (spanRight == 0 && point.x + 1 < maxSizeX && canvas[y1][point.x + 1] == ' ')
+            if (spanRight == 0 && point.x + 1 < maxSizeX && canvas[y1][point.x + 1] == symbolToReplaceByFill)
             {
                 stack.push({ point.x + 1, y1 });
                 spanRight = 1;
             }
-            else if (spanRight == 1 && point.x + 1 < maxSizeX && canvas[y1][point.x + 1] != ' ')
+            else if (spanRight == 1 && point.x + 1 < maxSizeX && canvas[y1][point.x + 1] != symbolToReplaceByFill)
             {
                 spanRight = 0;
             }
@@ -157,7 +159,7 @@ void FillFigure(Canvas& canvas, size_t startX, size_t startY)
             y1++;
         }
     }
-    canvas[startY][startX] = 'O';
+    canvas[startY][startX] = seedSymbol;
 }
 
 void FillAllSeeds(Canvas& canvas, CoordinatesVector& seeds)
