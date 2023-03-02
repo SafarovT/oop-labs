@@ -162,7 +162,7 @@ void FillFigure(Canvas& canvas, size_t startX, size_t startY)
     canvas[startY][startX] = seedSymbol;
 }
 
-void FillAllSeeds(Canvas& canvas, CoordinatesVector& seeds)
+void FillAllSeeds(Canvas& canvas, const CoordinatesVector& seeds)
 {
     for (Coordinates seedCoordinates : seeds)
         FillFigure(canvas, seedCoordinates.x, seedCoordinates.y);

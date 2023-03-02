@@ -58,7 +58,7 @@ bool OpenFile(std::ifstream& inputFile, std::string filePath)
 	return true;
 }
 
-void WriteMatrix(Mat3x3 matrix)
+void WriteMatrix(const Mat3x3& matrix)
 {
 	for (int i = 0; i < 3; ++i)
 	{
@@ -71,12 +71,12 @@ void WriteMatrix(Mat3x3 matrix)
 	}
 }
 
-double GetDeterminant2By2Matrix(Mat3x3 matrix)
+double GetDeterminant2By2Matrix(const Mat3x3& matrix)
 {
 	return matrix[0][0] * matrix[1][1] - matrix[1][0] * matrix[0][1];
 }
 
-double GetDeterminantOfRemainderMatrix(Mat3x3 matrix, int x, int y)
+double GetDeterminantOfRemainderMatrix(const Mat3x3& matrix, int x, int y)
 {
 	Mat3x3 remainderMatrix;
 	for (int i = 0, iRemainderMatrix = 0; i < 3; ++i)
@@ -98,7 +98,7 @@ double GetDeterminantOfRemainderMatrix(Mat3x3 matrix, int x, int y)
 	return GetDeterminant2By2Matrix(remainderMatrix);
 }
 
-double GetDeterminant3By3Matrix(Mat3x3 matrix)
+double GetDeterminant3By3Matrix(const Mat3x3& matrix)
 {
 	double determinant = 0;
 
@@ -110,7 +110,7 @@ double GetDeterminant3By3Matrix(Mat3x3 matrix)
 	return determinant;
 }
 
-Mat3x3 FindTranspose(Mat3x3 matrix)
+Mat3x3 FindTranspose(const Mat3x3& matrix)
 {
 	Mat3x3 resultMatrix;
 	for (int i = 0, y = 0; i < 3; ++i)
@@ -124,7 +124,7 @@ Mat3x3 FindTranspose(Mat3x3 matrix)
 	return resultMatrix;
 }
 
-void MultMatrixOnNumber(Mat3x3 &matrix, double multiplier)
+void MultMatrixOnNumber(Mat3x3& matrix, double multiplier)
 {
 	for (int i = 0; i < 3; ++i)
 	{
@@ -135,7 +135,7 @@ void MultMatrixOnNumber(Mat3x3 &matrix, double multiplier)
 	}
 }
 
-bool InvertMatrix(Mat3x3 &matrix) // TODO: если мы  назваем ф-ю invert, это не значит, что она будет печатать эту матрицу
+bool InvertMatrix(Mat3x3& matrix) // TODO: если мы  назваем ф-ю invert, это не значит, что она будет печатать эту матрицу
 {
 	double determinant = GetDeterminant3By3Matrix(matrix);
 	if (determinant == 0)
