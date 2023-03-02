@@ -19,6 +19,9 @@ if ERRORLEVEL 1 goto err
 fc "%TEMP%\TestWithLeakOutput.txt" TestWithLeakAnswer.txt
 if ERRORLEVEL 1 goto err
 
+%PROGRAM% Test.txt "%TEMP%\!TestOutput.txt"
+if ERRORLEVEL 1 goto err
+
 echo OK
 exit 0
 

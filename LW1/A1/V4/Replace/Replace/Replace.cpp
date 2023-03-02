@@ -3,6 +3,12 @@
 #include <string>
 #include <optional>
 
+enum ProgramEndCode
+{
+	Success = 0, Error = 1
+};
+
+
 struct Args
 {
 	std::string inputFilePath;
@@ -54,7 +60,7 @@ std::string ReplaceString(
 	return result;
 }
 
-void CopyFileWithReplace(
+void CopyFileWithReplacing(
 	std::istream& input,
 	std::ostream& output,
 	const std::string& searchString,
@@ -78,19 +84,23 @@ void CopyFileWithReplace(
 	}
 }
 
-bool IsFileOpeningFailed(std::ifstream& inputFile, std::ofstream& outputFile)
+bool OpenFiles(
+	std::ifstream& inputFile,
+	std::ofstream& outputFile,
+	std::string& inputFilePath,
+	std::string& outputFilePath
+)
 {
-	if (!inputFile.is_open())
+	inputFile.open(inputFilePath, std::ios::binary);
+	outputFile.open(outputFilePath, std::ios::binary);
+
+	if (!inputFile.is_open() || !outputFile.is_open())
 	{
-		std::cout << "Failed to open file for reading \n";
-		return true;
+		std::cout << "Failed to open file\n";
+		return false;
 	}
-	if (!outputFile.is_open())
-	{
-		std::cout << "Failed to open file for writing \n";
-		return true;
-	}
-	return false;
+
+	return true;
 }
 
 bool IsWorkWithFilesFailed(std::ifstream& inputFile, std::ofstream& outputFile)
@@ -114,30 +124,27 @@ int main(int argc, char* argv[])
 	auto args = ParseArgs(argc, argv);
 	if (!args)
 	{
-		return 1;
+		return ProgramEndCode::Error;
 	}
 
 	//4. Попробуй разнести по функциям
 	std::ifstream inputFile;
 	std::ofstream outputFile;
 
-	inputFile.open(args->inputFilePath);
-	outputFile.open(args->outputFilePath);
-	
-
-	if (IsFileOpeningFailed(inputFile, outputFile))
+	if (!OpenFiles(inputFile, outputFile, args->inputFilePath, args->outputFilePath))
 	{
-		return 1;
+		return ProgramEndCode::Error;
 	}
 
 	std::string search = args->searchString;
 	std::string replace = args->replacementString;
 
-	CopyFileWithReplace(inputFile, outputFile, search, replace);
+	CopyFileWithReplacing(inputFile, outputFile, search, replace);
+
 	if (IsWorkWithFilesFailed(inputFile, outputFile))
 	{
-		return 1;
+		return ProgramEndCode::Error;
 	}
 
-	return 0;
+	return ProgramEndCode::Success;
 }

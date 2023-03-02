@@ -24,6 +24,7 @@
     <Text Include="TestWithLeak.txt" />
     <Text Include="AverageTestAnswer.txt" />
     <Text Include="TestWithLeakAnswer.txt" />
+    <Text Include="Test.txt" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Tests.bat">

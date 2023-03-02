@@ -121,7 +121,7 @@ bool IsWorkWithFilesFailed(std::ifstream& inputFile, std::ofstream& outputFile)
     return false;
 }
 
-void shuffleBitsBack(char& byte)
+void ShuffleBitsBack(char& byte)
 {
     char resultedByte = 0;
     resultedByte |= (byte & 0b00000001) << 5;
@@ -135,7 +135,7 @@ void shuffleBitsBack(char& byte)
     byte = resultedByte;
 }
 
-void shuffleBits(char& byte)
+void ShuffleBits(char& byte)
 {
     char resultedByte = 0;
     resultedByte |= (byte & 0b00000001) << 2;
@@ -149,23 +149,23 @@ void shuffleBits(char& byte)
     byte = resultedByte;
 }
 
-void CopyFileCrypted(std::ifstream& inputFile, std::ofstream& outputFile, char key)
+void CryptFileAndCopy(std::ifstream& inputFile, std::ofstream& outputFile, char key)
 {
     char readedByte;
     while (inputFile.get(readedByte))
     {
         readedByte ^= key;
-        shuffleBits(readedByte);
+        ShuffleBits(readedByte);
         outputFile << readedByte;
     }
 }
 
-void CopyFileDecrypted(std::ifstream& inputFile, std::ofstream& outputFile, char key)
+void DecryptFileAndCopy(std::ifstream& inputFile, std::ofstream& outputFile, char key)
 {
     char readedByte;
     while (inputFile.get(readedByte))
     {
-        shuffleBitsBack(readedByte);
+        ShuffleBitsBack(readedByte);
         readedByte ^= key; 
         outputFile << readedByte;
     }
@@ -191,13 +191,13 @@ int main(int argc, char* argv[])
     {
     case WorkMode::Crypt:
     {
-        CopyFileCrypted(inputFile, outputFile, args->key);
+        CryptFileAndCopy(inputFile, outputFile, args->key);
 
         break;
     }
     case WorkMode::Decrypt:
     {
-        CopyFileDecrypted(inputFile, outputFile, args->key);
+        DecryptFileAndCopy(inputFile, outputFile, args->key);
     }
     }
 

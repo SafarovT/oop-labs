@@ -140,6 +140,7 @@
   <ItemGroup>
     <Text Include="AverageTest.txt" />
     <Text Include="AverageTestAnswer.txt" />
+    <Text Include="Test.txt" />
     <Text Include="TestWithLeak.txt" />
     <Text Include="TestWithLeakAnswer.txt" />
   </ItemGroup>
