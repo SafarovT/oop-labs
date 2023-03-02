@@ -138,9 +138,10 @@
     <ClCompile Include="Fill.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <Text Include="SimpleTest.txt" />
-    <Text Include="SimpleTest2.txt" />
-    <Text Include="Test1.txt" />
+    <Text Include="AverageTest.txt" />
+    <Text Include="AverageTestAnswer.txt" />
+    <Text Include="TestWithLeak.txt" />
+    <Text Include="TestWithLeakAnswer.txt" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Tests.bat" />

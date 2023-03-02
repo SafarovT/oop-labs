@@ -116,24 +116,12 @@ Canvas ReadCanvasForFilling(std::ifstream& inputFile, CoordinatesVector& seedsCo
     return canvas;
 }
 
-/*void FillFigure(Canvas& canvas, size_t x, size_t y)
-{
-    if (x < maxSizeX && y <= maxSizeY && (canvas[y][x] == ' ' || canvas[y][x] == 'O'))
-    {
-        if (canvas[y][x] == ' ') canvas[y][x] = symbolToFillWith;
-        FillFigure(canvas, x + 1, y);
-        FillFigure(canvas, x - 1, y);
-        FillFigure(canvas, x, y + 1);
-        FillFigure(canvas, x, y - 1);
-    }
-}*/
-
 void FillFigure(Canvas& canvas, size_t startX, size_t startY)
 {
-    //std::numeric_limits<std::deque<LineSegment>::size_type>::max()
+    canvas[startY][startX] = ' ';
     std::stack<Coordinates> stack;
     stack.push({startX, startY});
-    while (!stack.empty())
+    while (!stack.empty() && stack.size() != std::numeric_limits<std::deque<Coordinates>::size_type>::max())
     {
         Coordinates point = stack.top();
         stack.pop();
@@ -146,22 +134,22 @@ void FillFigure(Canvas& canvas, size_t startX, size_t startY)
         while (y1 < maxSizeY && canvas[y1][point.x] == ' ')
         {
             canvas[y1][point.x] = symbolToFillWith;
-            if (spanLeft == 0 && point.x < maxSizeX && canvas[y1][point.x - 1] == ' ')
+            if (spanLeft == 0 && point.x - 1 < maxSizeX && canvas[y1][point.x - 1] == ' ')
             {
                 stack.push({point.x - 1, y1});
                 spanLeft = 1;
             }
-            else if (spanLeft == 1 && point.x < maxSizeX && canvas[y1][point.x - 1] != ' ')
+            else if (spanLeft == 1 && point.x - 1 < maxSizeX && canvas[y1][point.x - 1] != ' ')
             {
                 spanLeft = 0;
             }
 
-            if (spanRight == 0 && point.x < maxSizeX && canvas[y1][point.x + 1] == ' ')
+            if (spanRight == 0 && point.x + 1 < maxSizeX && canvas[y1][point.x + 1] == ' ')
             {
                 stack.push({ point.x + 1, y1 });
                 spanRight = 1;
             }
-            else if (spanRight == 1 && point.x < maxSizeX && canvas[y1][point.x + 1] != ' ')
+            else if (spanRight == 1 && point.x + 1 < maxSizeX && canvas[y1][point.x + 1] != ' ')
             {
                 spanRight = 0;
             }
@@ -169,14 +157,13 @@ void FillFigure(Canvas& canvas, size_t startX, size_t startY)
             y1++;
         }
     }
+    canvas[startY][startX] = 'O';
 }
 
 void FillAllSeeds(Canvas& canvas, CoordinatesVector& seeds)
 {
-    for (auto i = seeds.begin(); i != seeds.end(); i++)
-    {
-        FillFigure(canvas, seeds[i].x, seeds[i].y);
-    }
+    for (Coordinates seedCoordinates : seeds)
+        FillFigure(canvas, seedCoordinates.x, seedCoordinates.y);
 }
 
 int main(int argc, char* argv[])
@@ -197,7 +184,7 @@ int main(int argc, char* argv[])
 
     CoordinatesVector seedsCoordinates;
     Canvas canvas = ReadCanvasForFilling(inputFile, seedsCoordinates);
-    FillFigure(canvas, seedsCoordinates[0].x, seedsCoordinates[0].y);
+    FillAllSeeds(canvas, seedsCoordinates);
     PrintCanvas(outputFile, canvas);
 
     if (IsWorkWithFilesFailed(inputFile, outputFile))
