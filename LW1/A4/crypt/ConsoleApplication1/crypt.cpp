@@ -149,8 +149,14 @@ void ShuffleBits(char& byte)
     byte = resultedByte;
 }
 
-void CryptFileAndCopy(std::ifstream& inputFile, std::ofstream& outputFile, char key)
+bool CryptFileAndCopy(std::string& inputFilePath, std::string& outputFilePath, char key)
 {
+    std::ifstream inputFile;
+    std::ofstream outputFile;
+
+    if (!OpenFiles(inputFile, outputFile, inputFilePath, outputFilePath))
+        return false;
+
     char readedByte;
     while (inputFile.get(readedByte))
     {
@@ -158,10 +164,21 @@ void CryptFileAndCopy(std::ifstream& inputFile, std::ofstream& outputFile, char 
         ShuffleBits(readedByte);
         outputFile << readedByte;
     }
+
+    if (IsWorkWithFilesFailed(inputFile, outputFile))
+        return false;
+
+    return true;
 }
 
-void DecryptFileAndCopy(std::ifstream& inputFile, std::ofstream& outputFile, char key)
+bool DecryptFileAndCopy(std::string& inputFilePath, std::string& outputFilePath, char key)
 {
+    std::ifstream inputFile;
+    std::ofstream outputFile;
+
+    if (!OpenFiles(inputFile, outputFile, inputFilePath, outputFilePath))
+        return false;
+
     char readedByte;
     while (inputFile.get(readedByte))
     {
@@ -169,41 +186,33 @@ void DecryptFileAndCopy(std::ifstream& inputFile, std::ofstream& outputFile, cha
         readedByte ^= key; 
         outputFile << readedByte;
     }
+
+    if (IsWorkWithFilesFailed(inputFile, outputFile))
+        return false;
+
+    return true;
 }
 
 int main(int argc, char* argv[])
 {
     auto args = ParseArgs(argc, argv);
     if (!args)
-    {
         return ProgramEndCode::Error;
-    }
-
-    std::ifstream inputFile;
-    std::ofstream outputFile;
-
-    if (!OpenFiles(inputFile, outputFile, args->inputFilePath, args->outputFilePath))
-    {
-        return ProgramEndCode::Error;
-    }
 
     switch (args->workMode)
     {
     case WorkMode::Crypt:
     {
-        CryptFileAndCopy(inputFile, outputFile, args->key);
+        if (!CryptFileAndCopy(args->inputFilePath, args->outputFilePath, args->key))
+            ProgramEndCode::Error;
 
         break;
     }
     case WorkMode::Decrypt:
     {
-        DecryptFileAndCopy(inputFile, outputFile, args->key);
+        if (!DecryptFileAndCopy(args->inputFilePath, args->outputFilePath, args->key))
+            ProgramEndCode::Error;
     }
-    }
-
-    if (IsWorkWithFilesFailed(inputFile, outputFile))
-    {
-        return ProgramEndCode::Error;
     }
 
     return ProgramEndCode::Success;

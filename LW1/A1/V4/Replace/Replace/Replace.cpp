@@ -33,57 +33,6 @@ struct Args
 	 return args;
 }
 
-std::string ReplaceString(
-	const std::string& subject,
-	const std::string& searchString,
-	const std::string& replacementString
-)
-{
-	size_t pos = 0;
-	//Уточнить есть ли инициализация по умолчанию
-	std::string result = "";
-	while (pos < subject.length())
-	{
-		size_t foundPos = subject.find(searchString, pos);
-		//1. Протестировать ситуацию когда в строке 123123 меняется 123 на 123123
-		result.append(subject, pos, foundPos - pos);
-		if (foundPos != std::string::npos)
-		{
-			result.append(replacementString);
-			pos = foundPos + searchString.length();
-		}
-		else
-		{
-			break;
-		}
-	}
-	return result;
-}
-
-void CopyFileWithReplacing(
-	std::istream& input,
-	std::ostream& output,
-	const std::string& searchString,
-	const std::string& replacementString
-)
-{
-	std::string line = "";
-
-	//3. if/else можно поменять с while. Это уберет лишнее дублирование кода
-	while (std::getline(input, line))
-	{
-		if (!searchString.empty())
-		{
-			output << ReplaceString(line, searchString, replacementString) << "\n";
-
-		}
-		else
-		{
-			output << line << "\n";
-		}
-	}
-}
-
 bool OpenFiles(
 	std::ifstream& inputFile,
 	std::ofstream& outputFile,
@@ -119,32 +68,82 @@ bool IsWorkWithFilesFailed(std::ifstream& inputFile, std::ofstream& outputFile)
 	return false;
 }
 
+std::string ReplaceString(
+	const std::string& subject,
+	const std::string& searchString,
+	const std::string& replacementString
+)
+{
+	size_t pos = 0;
+	//Уточнить есть ли инициализация по умолчанию
+	std::string result;
+	while (pos < subject.length())
+	{
+		size_t foundPos = subject.find(searchString, pos);
+		//1. Протестировать ситуацию когда в строке 123123 меняется 123 на 123123
+		result.append(subject, pos, foundPos - pos);
+		if (foundPos != std::string::npos)
+		{
+			result.append(replacementString);
+			pos = foundPos + searchString.length();
+		}
+		else
+		{
+			break;
+		}
+	}
+	return result;
+}
+
+bool CopyFileWithReplacing(
+	std::string& inputFilePath,
+	std::string& outputFilePath,
+	const std::string& searchString,
+	const std::string& replacementString
+)
+{
+	std::ifstream inputFile;
+	std::ofstream outputFile;
+
+	if (!OpenFiles(inputFile, outputFile, inputFilePath, outputFilePath))
+		return false;
+
+	std::string line;
+
+	//3. if/else можно поменять с while. Это уберет лишнее дублирование кода
+	while (std::getline(inputFile, line))
+	{
+		if (!searchString.empty())
+		{
+			outputFile << ReplaceString(line, searchString, replacementString) << "\n";
+
+		}
+		else
+		{
+			outputFile << line << "\n";
+		}
+	}
+
+	if (IsWorkWithFilesFailed(inputFile, outputFile))
+		return false;
+
+	return true;
+}
+
 int main(int argc, char* argv[])
 {
 	auto args = ParseArgs(argc, argv);
 	if (!args)
-	{
 		return ProgramEndCode::Error;
-	}
 
 	//4. Попробуй разнести по функциям
-	std::ifstream inputFile;
-	std::ofstream outputFile;
-
-	if (!OpenFiles(inputFile, outputFile, args->inputFilePath, args->outputFilePath))
-	{
-		return ProgramEndCode::Error;
-	}
 
 	std::string search = args->searchString;
 	std::string replace = args->replacementString;
 
-	CopyFileWithReplacing(inputFile, outputFile, search, replace);
-
-	if (IsWorkWithFilesFailed(inputFile, outputFile))
-	{
+	if (!CopyFileWithReplacing(args->inputFilePath, args->outputFilePath, search, replace))
 		return ProgramEndCode::Error;
-	}
+
 
 	return ProgramEndCode::Success;
 }

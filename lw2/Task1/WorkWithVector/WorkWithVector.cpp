@@ -1,44 +1,17 @@
-#include <iostream>
-#include <algorithm>
-#include <vector>
-
-enum ProgramEndCode
-{
-    Success = 0, Error = 1
-};
-
-using VectorElementType = int;
-using VectorType = std::vector<VectorElementType>;
-
-void ReadVector(VectorType& vector)
-{
-    int inValue;
-    while (std::cin >> inValue)
-    {
-        vector.push_back(inValue);
-    }
-}
-
-void MultVectorOnMinValue(VectorType& vector)
-{
-    VectorType::iterator minElementIterator = std::min_element(vector.begin(), vector.end());
-    auto multElementOnMinValue = [](VectorElementType element, VectorType::iterator minElementIterator) { return element * *minElementIterator; };
-    std::transform(vector.begin(), vector.end(), vector.begin(), multElementOnMinValue);
-}
-
-void PrintVectorSorted(const VectorType& vector)
-{
-    std::sort(vector.begin(), vector.end());
-    copy(vector.begin(), vector.end(), std::ostream_iterator<size_t>(std::cout, " "));
-}
+#include "VectorHandler.h"
 
 int main()
 {
     VectorType vector;
 
-    ReadVector(vector);
+    if (!ReadVector(std::cin, vector))
+    {
+        std::cout << "Please input a not empty valid vector" << std::endl;
+        
+        return ProgramEndCode::Error;
+    }
     MultVectorOnMinValue(vector);
-    PrintVectorSorted(vector);
+    PrintVectorSorted(std::cout, vector);
 
     return ProgramEndCode::Success;
 }
