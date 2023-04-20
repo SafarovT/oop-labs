@@ -1,4 +1,5 @@
 #pragma once
+#include <optional>
 
 enum class Direction
 {
@@ -45,7 +46,9 @@ private:
 	static inline const SpeedRange FIFTH_GEAR_SPEED_RANGE = { 50, 150 };
 	static inline const SpeedRange NEUTRAL_GEAR_SPEED_RANGE = { REVERSE_GEAR_SPEED_RANGE.min, FIFTH_GEAR_SPEED_RANGE.max };
 
-	static bool IsInRange(Gear gear);
+	static bool IsSpeedInRange(int speed, SpeedRange range);
+	static std::optional<SpeedRange> GetSpeedRangeForGear(Gear gear);
+	bool IsDirectionAllowsToSetGear(Gear gear);
 	
 	bool m_isTurnedOn = false;
 	int m_speed = 0;
