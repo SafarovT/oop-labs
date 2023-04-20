@@ -2,45 +2,62 @@
 
 namespace
 {
-	const size_t MAX_CODED_SYMBOL_STRING_LENGTH = 6;
+	using namespace std;
 
-	std::optional<char> getSymbolIfReplacingStringFound(std::string stringToSearch)
+	const size_t MAX_CODED_SYMBOL_STRING_LENGTH = 6;//TODO: rename MAX_HTML_ENTITY
+
+	map<string_view, char> htmlEntitiesDecodes = { //TODO: htmlEntitiesToSymbols
+		{"&quot;", '"'},
+		{"&apos;", '\''},
+		{"&lt;", '<'},
+		{"&gt;", '>'},
+		{"&amp;", '&'}
+	};
+
+	bool IsElementFound(size_t foundIndex)
 	{
-		if (stringToSearch.find("&quot;") == 0) return '"';
-		else if (stringToSearch.find("&apos;") == 0) return '\'';
-		else if (stringToSearch.find("&lt;") == 0) return '<';
-		else if (stringToSearch.find("&gt;") == 0) return '>';
-		else if (stringToSearch.find("&amp;") == 0) return '&';
+		return foundIndex != string::npos;
+	}
+
+	optional<char> getSymbolIfReplacingStringFound(string_view stringToSearch)
+	{
+		size_t entityEnd = stringToSearch.find(';');// TODO use const
+		if (IsElementFound(entityEnd))
+		{
+			auto decodedEntity = htmlEntitiesDecodes.find(stringToSearch.substr(0, entityEnd + 1)); 
+			if (decodedEntity != htmlEntitiesDecodes.end())
+			{
+				return	decodedEntity->second;
+			}
+		}
 
 		return std::nullopt;
 	}
 }
 
-// use map
-// use std::string_view const& html
-
-std::string HTMLDecode(std::string const& html)
+string HTMLDecode(string_view html)
 {
-	std::string decodedHTML;
+	string decodedHTML;
+	decodedHTML.reserve(html.size());
 	size_t lastFindIndex = 0;
-	size_t nextCodedSymbolStart = html.find('&');
-	while (nextCodedSymbolStart != std::string::npos)
+	size_t nextEntityStart = html.find('&');//TODO: use const
+	while (IsElementFound(nextEntityStart))
 	{
-		decodedHTML += html.substr(lastFindIndex, nextCodedSymbolStart - lastFindIndex);
-		auto symbolToReplaceWith = getSymbolIfReplacingStringFound(html.substr(nextCodedSymbolStart));
+		decodedHTML += html.substr(lastFindIndex, nextEntityStart - lastFindIndex);
+		auto symbolToReplaceWith = getSymbolIfReplacingStringFound(html.substr(nextEntityStart));
 		if (symbolToReplaceWith)
 		{
 			decodedHTML += *symbolToReplaceWith;
-			lastFindIndex = html.find(';', nextCodedSymbolStart) + 1;
+			lastFindIndex = html.find(';', nextEntityStart) + 1;
 		}
 		else
 		{
 			decodedHTML += '&';
-			lastFindIndex = nextCodedSymbolStart + 1;
+			lastFindIndex = nextEntityStart + 1;
 		}
-		nextCodedSymbolStart = html.find('&', lastFindIndex);
+		nextEntityStart = html.find('&', lastFindIndex);
 	}
-	decodedHTML += html.substr(lastFindIndex);
+	decodedHTML += html.substr(lastFindIndex);//TODO: lastFoundIndex
 
 	return decodedHTML;
 }

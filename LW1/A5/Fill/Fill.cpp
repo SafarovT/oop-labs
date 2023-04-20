@@ -11,23 +11,22 @@ enum ProgramEndCode
     Success = 0, Error = 1
 };
 
-struct Coordinates
+struct Point // TODO: point
 {
-    unsigned int x; // TODO use int
+    unsigned int x;
     unsigned int y;
 };
 
 const unsigned int MAX_SIZE_X = 100;
 const unsigned int MAX_SIZE_Y = 100;
-const char SYMBOL_TO_REPLACY_BY_FILL = ' '; // UPPER_SNAKE_CASE
-const char SYMBOL_TO_FILL_WITH = '—';
+const char SYMBOL_TO_REPLACY_BY_FILL = ' ';
+const char SYMBOL_TO_FILL_WITH = 'пїЅ';
 const char SEED_SYMBOL = 'O';
-const char END_OF_LINE_SYMBOLS[3] = { '\n', '\r', '\r\n' };
+const char END_OF_LINE_SYMBOLS[2] = {'\n', '\r'};
 
-// Перепутанно (проверить с неквадратным соотношением сторон)
 using Canvas = std::array<std::array<char, MAX_SIZE_X>, MAX_SIZE_Y>;
-using CoordinatesVector = std::vector<Coordinates>;
-using CoordinatesStack = std::stack<Coordinates>;
+using CoordinatesVector = std::vector<Point>;
+using CoordinatesStack = std::stack<Point>;
 
 struct Args
 {
@@ -39,8 +38,9 @@ std::optional<Args> ParseArgs(int argc, char* argv[])
 {
     if (argc != 3)
     {
-        std::cout << "Invalid argument count\n"
-            << "Usage: fill.exe <inputFile.txt> <outputFile.txt>\n";
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ std::endl
+        std::cout << "Invalid argument count" << std::endl
+            << "Usage: fill.exe <inputFile.txt> <outputFile.txt>" << std::endl;
         return std::nullopt;
     }
     Args args;
@@ -50,48 +50,46 @@ std::optional<Args> ParseArgs(int argc, char* argv[])
     return args;
 }
 
-bool PrintCanvasToFile(std::string& outputFilePath, Canvas& canvas)
+void PrintCanvasInFile(std::ofstream& outputFile, Canvas const& canvas)
+{
+    for (int i = 0; i < MAX_SIZE_Y; ++i)
+    {
+        for (int j = 0; j < MAX_SIZE_Y; ++j)
+        {
+            // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ/пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ istream пїЅ ostream
+            outputFile << canvas[i][j];
+        }
+        outputFile << std::endl;
+    }
+}
+
+bool PrintCanvasInFile(std::string const& outputFilePath, Canvas const& canvas)
 {
     std::ofstream outputFile;
     outputFile.open(outputFilePath, std::ios::binary);
     if (!outputFile.is_open())
     {
-        std::cout << "Failed to open file\n";
+        std::cout << "Failed to open file " << outputFilePath << std::endl;
 
         return false;
     }
 
-    for (int i = 0; i < MAX_SIZE_Y; ++i)
-    {
-        for (int j = 0; j < MAX_SIZE_Y; ++j)
-        {
-            outputFile << canvas[i][j];
-        }
-        outputFile << std::endl;
-    }
+    PrintCanvasInFile(outputFile, canvas);
 
     if (!outputFile.flush())
     {
-        std::cout << "Failed to write data to output file \n";
+        std::cout << "Failed to write data to file " << outputFilePath << std::endl;
         return false;
     }
 
     return true;
 }
 
-bool ReadCanvasAndSeedsFromFile(std::string& inputFilePath, Canvas& canvas, CoordinatesVector& seedsCoordinates)
+void ReadCanvasAndSeedsFromFile(std::ifstream& inputFile, Canvas& canvas, CoordinatesVector& seedsCoordinates)
 {
-    std::ifstream inputFile;
-    inputFile.open(inputFilePath, std::ios::binary);
-    if (!inputFile.is_open())
-    {
-        std::cout << "Failed to open file\n";
-
-        return false;
-    }
-
+    // пїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ istream/ostream
     std::fill(&canvas[0][0], &canvas[0][0] + sizeof(canvas), SYMBOL_TO_REPLACY_BY_FILL);
-    unsigned int y = 0; // TODO Заменить i j на x y
+    unsigned int y = 0;
     std::string readedLine;
 
     auto IsEOLN = [](char symbol)
@@ -103,7 +101,7 @@ bool ReadCanvasAndSeedsFromFile(std::string& inputFilePath, Canvas& canvas, Coor
     {
         unsigned int x = 0;
         while (x < MAX_SIZE_X && x < readedLine.length() && IsEOLN(readedLine[x]))
-            // TODO Сделать функцию, которая будет возвращать bool если символ EOLN (лямбда функция предпочтительнее)
+            // TODO пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ bool пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ EOLN (пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ)
         {
             canvas[y][x] = readedLine[x];
             if (readedLine[x] == SEED_SYMBOL)
@@ -114,28 +112,53 @@ bool ReadCanvasAndSeedsFromFile(std::string& inputFilePath, Canvas& canvas, Coor
         }
         y++;
     }
+}
+
+bool ReadCanvasAndSeedsFromFile(std::string const& inputFilePath, Canvas& canvas, CoordinatesVector& seedsCoordinates)
+{
+    std::ifstream inputFile;
+    inputFile.open(inputFilePath, std::ios::binary);
+    if (!inputFile.is_open())
+    {
+        std::cout << "Failed to open file " << inputFilePath << std::endl;
+
+        return false;
+    }
+
+    ReadCanvasAndSeedsFromFile(inputFile, canvas, seedsCoordinates);
 
     if (inputFile.bad())
     {
-        std::cout << "Failed to read data from input file \n";
+        std::cout << "Failed to read data from file " << inputFilePath << std::endl;
         return false;
     }
 
     return true;
 }
 
+bool IsFillingLineEndUnreached(Point point, Canvas const& canvas)
+{
+    return (point.y < MAX_SIZE_Y && canvas[point.y][point.x] == SYMBOL_TO_REPLACY_BY_FILL);
+}
+
 // const&
 // remove stack from this function
 // sideSpan -> enum?
-bool ShouldFieldLine(bool& checkSide, Coordinates const& pointOnLine, Canvas const& canvas)
+bool ShouldFillLine(bool& checkSide, Point const& pointOnLine, Canvas const& canvas)
 {
-    if (!checkSide && pointOnLine.x < MAX_SIZE_X && canvas[pointOnLine.y][pointOnLine.x] == SYMBOL_TO_REPLACY_BY_FILL)
+    //пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+    auto IsLineUnfilled = [](Point point, Canvas const& canvas)
+    {
+        return canvas[point.y][point.x] == SYMBOL_TO_REPLACY_BY_FILL;
+    };
+
+    if (!checkSide &&  pointOnLine.x < MAX_SIZE_X && IsLineUnfilled(pointOnLine, canvas))
     {
         checkSide = true;
 
         return true;
     }
-    else if (checkSide && pointOnLine.x < MAX_SIZE_X && canvas[pointOnLine.y][pointOnLine.x] != SYMBOL_TO_REPLACY_BY_FILL)
+    else if (checkSide && pointOnLine.x < MAX_SIZE_X && !IsLineUnfilled(pointOnLine, canvas))
     {
         checkSide = false;
 
@@ -145,59 +168,74 @@ bool ShouldFieldLine(bool& checkSide, Coordinates const& pointOnLine, Canvas con
     return false;
 }
 
-// попробовать упростить код
-// TODO edit name (floodFill)
-void FloodFill(Canvas& canvas, Coordinates const& startCoordinates) // TODO  Coordinates
+//TODO: пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
+int GetEndOfLineCoordinate(Point currentPoint, Canvas const& canvas)
 {
-    canvas[startCoordinates.y][startCoordinates.x] = SYMBOL_TO_REPLACY_BY_FILL;
-    CoordinatesStack stack;
-    stack.push({startCoordinates.x, startCoordinates.y});
-    
-    // Упростить условие
-    while (!stack.empty() && stack.size() != SIZE_MAX)
+    while (IsFillingLineEndUnreached(currentPoint, canvas))
     {
-        const unsigned int x = stack.top().x;
-        unsigned int y = stack.top().y; // TODO replace with y
-        stack.pop();
+        currentPoint.y--;
+    }
 
-        // Add {}
-        while (y < MAX_SIZE_Y && canvas[y][x] == SYMBOL_TO_REPLACY_BY_FILL)
-        {
-            y--;
-        }
+    return currentPoint.y + 1;
+}
 
-        y++;
-        // checking side
-        bool checkLeft = false, checkRight = false; // TODO bool
+// пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ
+// TODO edit name (floodFill)
+void FloodFill(Canvas& canvas, Point const& startCoordinates) // TODO  Coordinates
+{
+    //tOOD: coordinates->points
+    CoordinatesStack coordinatesToFill;
+    coordinatesToFill.push({startCoordinates.x, startCoordinates.y});
+    
+    // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+    while (!coordinatesToFill.empty() && coordinatesToFill.size() != SIZE_MAX)
+    {
+        const unsigned int x = coordinatesToFill.top().x;
+        unsigned int y = coordinatesToFill.top().y; // TODO replace with y
+        coordinatesToFill.pop();
+
+        y = GetEndOfLineCoordinate({x, y}, canvas);
+       
+        bool checkLeft = false;
+        bool checkRight = false;
+
+        // TODO bool
         // addComent or change names | lambda
-        while (y < MAX_SIZE_Y && canvas[y][x] == SYMBOL_TO_REPLACY_BY_FILL && stack.size() != SIZE_MAX)
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ 
+        while (IsFillingLineEndUnreached({x, y}, canvas) && coordinatesToFill.size() != SIZE_MAX)
         {
             canvas[y][x] = SYMBOL_TO_FILL_WITH;
 
-            Coordinates pointOnLeftSide = { x - 1, y };
-            if (ShouldFieldLine(checkLeft, pointOnLeftSide, canvas))
+            Point pointOnLeftSide = { x - 1, y };
+            if (ShouldFillLine(checkLeft, pointOnLeftSide, canvas))
             {
-                stack.push(pointOnLeftSide);
+                coordinatesToFill.push(pointOnLeftSide);
             }
 
-            Coordinates pointOnRightSide = { x + 1, y };
-            if (ShouldFieldLine(checkRight, pointOnRightSide, canvas))
+            Point pointOnRightSide = { x + 1, y };
+            if (ShouldFillLine(checkRight, pointOnRightSide, canvas))
             {
-                stack.push(pointOnRightSide);
+                coordinatesToFill.push(pointOnRightSide);
             }
 
             y++;
         }
     }
+}
+
+void FloodFillWrapper(Canvas& canvas, Point const& startCoordinates)
+{
+    canvas[startCoordinates.y][startCoordinates.x] = SYMBOL_TO_REPLACY_BY_FILL;
+    FloodFill(canvas, startCoordinates);
     canvas[startCoordinates.y][startCoordinates.x] = SEED_SYMBOL;
 }
 
 // TODO add from
 void FloodFillFromEachSeed(Canvas& canvas, CoordinatesVector const& seeds)
 {
-    for (Coordinates seedCoordinates : seeds)
+    for (Point seedCoordinates : seeds)
     {
-        FloodFill(canvas, seedCoordinates);
+        FloodFillWrapper(canvas, seedCoordinates);
     }
 }
 
@@ -209,7 +247,7 @@ int main(int argc, char* argv[])
         return ProgramEndCode::Error;
     }
 
-    //TODO Чтение файла и запись в функциях принмающих имя файла
+    //TODO пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
 
     CoordinatesVector seedsCoordinates;
     Canvas canvas;
@@ -218,9 +256,9 @@ int main(int argc, char* argv[])
         return ProgramEndCode::Error;
     }
 
-    // TODO Оба по ссылке
+    // TODO пїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
     FloodFillFromEachSeed(canvas, seedsCoordinates);
-    if (!PrintCanvasToFile(args->outputFilePath, canvas))
+    if (!PrintCanvasInFile(args->outputFilePath, canvas))
     {
         return ProgramEndCode::Error;
     }

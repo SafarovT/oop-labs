@@ -6,10 +6,11 @@
 
 enum ProgramEndCode
 {
-	Success = 0, Error
+	Success = 0, Error = 1
 };
 
-using Mat3x3 = std::array<std::array<double, 3>, 3>;
+using MatElementType = double;
+using Mat3x3 = std::array<std::array<MatElementType, 3>, 3>;
 
 std::optional<std::string> ParseArgs(int argc, char* argv[]) // TODO: replace args with string
 {
@@ -23,10 +24,16 @@ std::optional<std::string> ParseArgs(int argc, char* argv[]) // TODO: replace ar
 	return argv[1];
 }
 
-std::optional<Mat3x3> ReadMatrix(std::istream& inputFile)
+std::optional<Mat3x3> ReadMatrix(std::string& inputFilePath)
 {
+	std::ifstream inputFile;
+	if (!OpenFile(inputFile, inputFilePath))
+	{
+		return std::nullopt;
+	}
+
 	Mat3x3 resultMatrix;
-	double readedValue;
+	MatElementType readedValue;
 	for (int i = 0; i < 3; ++i)
 	{
 		for (int j = 0; j < 3; ++j)
@@ -38,10 +45,12 @@ std::optional<Mat3x3> ReadMatrix(std::istream& inputFile)
 			else
 			{
 				std::cout << "Please, enter a correst matrix with numbers\n";
+
 				return std::nullopt;
 			}
 		}
 	}
+
 	return resultMatrix;
 }
 
@@ -64,19 +73,19 @@ void WriteMatrix(const Mat3x3& matrix)
 	{
 		for (int j = 0; j < 3; ++j)
 		{
-			double numberToPrint = round(matrix[i][j] * 1000) / 1000;
+			MatElementType numberToPrint = round(matrix[i][j] * 1000) / 1000;
 			std::cout << numberToPrint << " ";
 		}
 		std::cout << std::endl;
 	}
 }
 
-double GetDeterminant2By2Matrix(const Mat3x3& matrix)
+MatElementType GetDeterminant2By2Matrix(const Mat3x3& matrix)
 {
 	return matrix[0][0] * matrix[1][1] - matrix[1][0] * matrix[0][1];
 }
 
-double GetDeterminantOfRemainderMatrix(const Mat3x3& matrix, int x, int y)
+MatElementType GetDeterminantOfRemainderMatrix(const Mat3x3& matrix, int x, int y)
 {
 	Mat3x3 remainderMatrix;
 	for (int i = 0, iRemainderMatrix = 0; i < 3; ++i)
@@ -98,9 +107,9 @@ double GetDeterminantOfRemainderMatrix(const Mat3x3& matrix, int x, int y)
 	return GetDeterminant2By2Matrix(remainderMatrix);
 }
 
-double GetDeterminant3By3Matrix(const Mat3x3& matrix)
+MatElementType GetDeterminant3By3Matrix(const Mat3x3& matrix)
 {
-	double determinant = 0;
+	MatElementType determinant = 0;
 
 	for (int i = 0; i < 3; ++i)
 	{
@@ -124,7 +133,7 @@ Mat3x3 FindTranspose(const Mat3x3& matrix)
 	return resultMatrix;
 }
 
-void MultMatrixOnNumber(Mat3x3& matrix, double multiplier)
+void MultMatrixOnNumber(Mat3x3& matrix, MatElementType multiplier)
 {
 	for (int i = 0; i < 3; ++i)
 	{
@@ -135,9 +144,9 @@ void MultMatrixOnNumber(Mat3x3& matrix, double multiplier)
 	}
 }
 
-bool InvertMatrix(Mat3x3& matrix) // TODO: если мы  назваем ф-ю invert, это не значит, что она будет печатать эту матрицу
+bool InvertMatrix(Mat3x3& matrix) // TODO: пїЅпїЅпїЅпїЅ пїЅпїЅ  пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ-пїЅ invert, пїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 {
-	double determinant = GetDeterminant3By3Matrix(matrix);
+	MatElementType determinant = GetDeterminant3By3Matrix(matrix);
 	if (determinant == 0)
 	{
 		std::cout << "Impossible to invert matrix: determinant is equal to 0\n";
@@ -159,14 +168,7 @@ int main(int argc, char* argv[])
 		return ProgramEndCode::Error; // use constant
 	}
 
-	std::ifstream inputFile;
-
-	if (!OpenFile(inputFile, *inputFilePath))
-	{
-		return ProgramEndCode::Error;
-	}
-
-	auto matrix = ReadMatrix(inputFile);
+	auto matrix = ReadMatrix(*inputFilePath);
 
 	if (!matrix)
 	{

@@ -75,12 +75,12 @@ std::string ReplaceString(
 )
 {
 	size_t pos = 0;
-	//Уточнить есть ли инициализация по умолчанию
+	//пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 	std::string result;
 	while (pos < subject.length())
 	{
 		size_t foundPos = subject.find(searchString, pos);
-		//1. Протестировать ситуацию когда в строке 123123 меняется 123 на 123123
+		//1. пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ 123123 пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ 123 пїЅпїЅ 123123
 		result.append(subject, pos, foundPos - pos);
 		if (foundPos != std::string::npos)
 		{
@@ -110,7 +110,7 @@ bool CopyFileWithReplacing(
 
 	std::string line;
 
-	//3. if/else можно поменять с while. Это уберет лишнее дублирование кода
+	//3. if/else пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ while. пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
 	while (std::getline(inputFile, line))
 	{
 		if (!searchString.empty())
@@ -136,7 +136,7 @@ int main(int argc, char* argv[])
 	if (!args)
 		return ProgramEndCode::Error;
 
-	//4. Попробуй разнести по функциям
+	//4. пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 
 	std::string search = args->searchString;
 	std::string replace = args->replacementString;

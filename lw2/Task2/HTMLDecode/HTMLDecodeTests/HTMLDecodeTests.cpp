@@ -36,6 +36,13 @@ TEST_CASE("HTMLDecode: Coded symbol right before eoln")
 	REQUIRE(result == "&");
 }
 
+TEST_CASE("rustam")
+{
+	std::string testString = "&ap&apos;os;;;;";
+	std::string result = HTMLDecode(testString);
+	REQUIRE(result == "&ap'os;;;;");
+}
+
 TEST_CASE("HTMLDecode: Coded symbol after &amp;")
 {
 	std::string testString = "&amp;lt;";

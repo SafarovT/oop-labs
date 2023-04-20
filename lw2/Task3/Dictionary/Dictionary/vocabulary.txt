@@ -1,0 +1,7 @@
+[KOTT] SKOTT
+[Cat] Kot, Koshka
+[Dog] Sobaka, Kot
+[Plane] Samolet
+[Aircraft] Vertolet, Samolet, Bespilotnik
+[Pen] Ruchka
+[Y] YY

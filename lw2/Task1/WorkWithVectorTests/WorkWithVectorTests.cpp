@@ -9,13 +9,6 @@ TEST_CASE("ReadVector: Empty input")
 	REQUIRE(!ReadVector(input, vector));
 }
 
-TEST_CASE("ReadVector: Vector with symbols")
-{
-	VectorType vector;
-	std::istringstream input("1 2 3 a");
-	REQUIRE(!ReadVector(input, vector));
-}
-
 TEST_CASE("ReadVector: Normal vector")
 {
 	VectorType vector;
@@ -57,6 +50,18 @@ TEST_CASE("PrintVectorSorted: Print already sorted vector ")
 	std::ostringstream expectedOutput("-2 -1 0 1 2 ");
 	std::ostringstream output("");
 
+	PrintVectorSorted(output, vector);
+	REQUIRE(output.str() == expectedOutput.str());
+}
+
+
+TEST_CASE("PrintVectorSorted: Mult on zero ")
+{
+	VectorType vector = { 0, 1, 2, 3, 4 };
+	std::ostringstream expectedOutput("0 0 0 0 0 ");
+	std::ostringstream output("");
+
+	MultVectorOnMinValue(vector);
 	PrintVectorSorted(output, vector);
 	REQUIRE(output.str() == expectedOutput.str());
 }

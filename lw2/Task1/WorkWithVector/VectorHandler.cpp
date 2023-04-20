@@ -3,14 +3,15 @@
 bool ReadVector(std::istream& input, VectorType& vector)
 {
     VectorElementType inValue;
-    while (input >> inValue)
+    while (vector.size() != SIZE_MAX && input >> inValue)
     {
         vector.push_back(inValue);
     }
-    if (!input.eof())
+
+    if (vector.empty())
     {
-        return false;
-    };
+        std::cout << "Enter not empty valid list of numbers" << std::endl;
+    }
 
     return !vector.empty();
 }

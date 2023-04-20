@@ -4,9 +4,6 @@ REM При запуске без параметров ожидается ненулевой код возврата
 %PROGRAM% > nul
 if NOT ERRORLEVEL 1 goto err
 
-del "%TEMP%\AverageTestOutput.txt
-del "%TEMP%\TestWithLeakOutput.txt
-
 REM Тест с несколькими заливками, различных фигур
 %PROGRAM% AverageTest.txt "%TEMP%\AverageTestOutput.txt"
 if ERRORLEVEL 1 goto err
