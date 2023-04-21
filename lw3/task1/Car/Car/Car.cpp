@@ -100,14 +100,14 @@ bool Car::SetSpeed(int speed)
 	return true;
 }
 
-bool Car::IsDirectionAllowsToSetGear(Gear gear)
+bool Car::IsDirectionAllowsToSetGear(Gear gear) // TODO: do instead is
 {
 	Direction carDirection = GetDirection();
 	if (gear == Gear::Reverse)
 	{
 		return carDirection == Direction::NoDirection;
 	}
-	if (gear > Gear::First)
+	if (gear >= Gear::First)
 	{
 		return carDirection != Direction::Backward;
 	}
@@ -122,7 +122,7 @@ bool Car::SetGear(Gear gear)
 		return true;
 	}
 	auto avaiableSpeedRange = GetSpeedRangeForGear(gear);
-	if (!avaiableSpeedRange || !IsSpeedInRange(m_speed, *avaiableSpeedRange) || !m_isTurnedOn)
+	if (!avaiableSpeedRange || !IsSpeedInRange(abs(m_speed), *avaiableSpeedRange) || !m_isTurnedOn)
 	{
 		return false;
 	}

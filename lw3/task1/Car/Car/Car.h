@@ -1,22 +1,27 @@
 #pragma once
 #include <optional>
 
+// todo: validate speed to be >= 0
+// todo: выдавать более понятне соощение об ошибке
+
+// enum class
 enum class Direction
 {
-	Forward,
-	Backward,
-	NoDirection
+	Backward = -1,
+	NoDirection = 0,
+	Forward = 1
 };
 
+// enum class
 enum class Gear
 {
-	Reverse,
-	Neutral,
-	First,
-	Second,
-	Third,
-	Fourth,
-	Fifth
+	Reverse = -1,
+	Neutral = 0,
+	First = 1,
+	Second = 2,
+	Third = 3,
+	Fourth = 4,
+	Fifth = 5
 };
 
 class Car
@@ -38,13 +43,13 @@ private:
 		int min;
 		int max;
 	};
-	static inline const SpeedRange REVERSE_GEAR_SPEED_RANGE = { -20, 0 };
+	static inline const SpeedRange REVERSE_GEAR_SPEED_RANGE = { 0, 20 };
 	static inline const SpeedRange FIRST_GEAR_SPEED_RANGE = { 0, 30 };
 	static inline const SpeedRange SECOND_GEAR_SPEED_RANGE = { 20, 50 };
 	static inline const SpeedRange THIRD_GEAR_SPEED_RANGE = { 30, 60 };
 	static inline const SpeedRange FOURTH_GEAR_SPEED_RANGE = { 40, 90 };
 	static inline const SpeedRange FIFTH_GEAR_SPEED_RANGE = { 50, 150 };
-	static inline const SpeedRange NEUTRAL_GEAR_SPEED_RANGE = { REVERSE_GEAR_SPEED_RANGE.min, FIFTH_GEAR_SPEED_RANGE.max };
+	static inline const SpeedRange NEUTRAL_GEAR_SPEED_RANGE = { 0, FIFTH_GEAR_SPEED_RANGE.max };
 
 	static bool IsSpeedInRange(int speed, SpeedRange range);
 	static std::optional<SpeedRange> GetSpeedRangeForGear(Gear gear);
