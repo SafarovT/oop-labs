@@ -5,7 +5,9 @@
 class Calculator
 {
 public:
-	void StartWork(std::istream& input, std::ostream& output);
+	bool InitVariable();
+	bool InitVariableWithValue();
+
 private:
 	Memory m_memory;
 	const std::string EXIT_COMMAND = "exit";
