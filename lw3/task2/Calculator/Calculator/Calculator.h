@@ -5,12 +5,12 @@
 class Calculator
 {
 public:
-	bool InitVariable();
-	bool InitVariableWithValue();
-
+	bool InitVariable(std::string name);
+	bool InitVariableWithValue(std::string name, double value);
+	bool InitFunctionWithValue();
+	double GetValue(std::string name) const;
+	std::vector<Variable> GetVariables() const;
+	std::vector<Function> GetFunctions() const;
 private:
 	Memory m_memory;
-	const std::string EXIT_COMMAND = "exit";
-	const std::string BEFORE_USER_INPUT_MESSAGE = "> ";
-	std::string ReadUserCommand(std::istream& inputStream, std::ostream& outputStream) const;
 };
