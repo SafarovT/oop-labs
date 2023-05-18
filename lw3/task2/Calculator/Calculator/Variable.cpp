@@ -1,6 +1,6 @@
 #include "Variable.h"
 
-void Variable::SetValue(double value)
+void Variable::SetValue(double const value)
 {
 	m_value = value;
 }

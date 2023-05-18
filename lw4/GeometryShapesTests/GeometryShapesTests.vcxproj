@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{79b76b00-5cfa-465c-8944-1740fb80b9aa}</ProjectGuid>
-    <RootNamespace>CalculatorTests</RootNamespace>
+    <ProjectGuid>{64d4aac0-8b2c-46a8-b0a2-b24e6ecbb8e7}</ProjectGuid>
+    <RootNamespace>GeometryShapesTests</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -131,12 +131,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\Calculator\Calculator.cpp" />
-    <ClCompile Include="..\Calculator\Function.cpp" />
-    <ClCompile Include="..\Calculator\Memory.cpp" />
-    <ClCompile Include="..\Calculator\Operation.cpp" />
-    <ClCompile Include="..\Calculator\Variable.cpp" />
-    <ClCompile Include="CalculatorTests.cpp" />
+    <ClCompile Include="..\GeometryShapes\CCircle.cpp" />
+    <ClCompile Include="..\GeometryShapes\CLineSegment.cpp" />
+    <ClCompile Include="..\GeometryShapes\common.cpp" />
+    <ClCompile Include="..\GeometryShapes\CPoint.cpp" />
+    <ClCompile Include="..\GeometryShapes\CRectangle.cpp" />
+    <ClCompile Include="..\GeometryShapes\CShape.cpp" />
+    <ClCompile Include="..\GeometryShapes\CSolidShape.cpp" />
+    <ClCompile Include="..\GeometryShapes\CTriangle.cpp" />
+    <ClCompile Include="GeometryShapesTests.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -1,76 +1,120 @@
 #include "Memory.h"
-#include <algorithm>
+#include <regex>
 
-std::optional<Variable> Memory::GetVariableByName(std::string name) const
+Variable* Memory::GetVariableByName(std::string const& name)
 {
-	auto isVariableFound = [name](Variable variable)
+	Variable* variablePointer = nullptr;
+	auto foundVariable = m_variables.find(name);
+	if (foundVariable != m_variables.end())
 	{
-		return variable.GetName() == name;
-	};
-	auto variableIter = std::find_if(m_variables.begin(), m_variables.end(), isVariableFound);
-	if (variableIter == m_variables.end())
-	{
-		return std::nullopt;
+		variablePointer = &foundVariable->second;
 	}
 
-	return *variableIter;
+	return variablePointer;
 }
 
-std::optional<Function> Memory::GetFunctionByName(std::string name) const
+Function* Memory::GetFunctionByName(std::string const& name)
 {
-	auto isFunctionFound = [name](Function function)
+	Function* functionPointer = nullptr;
+	auto foundFunction = m_functions.find(name);
+	if (foundFunction != m_functions.end())
 	{
-		return function.GetName() == name;
-	};
-	auto functionIter = std::find_if(m_functions.begin(), m_functions.end(), isFunctionFound);
-	if (functionIter == m_functions.end())
-	{
-		return std::nullopt;
+		functionPointer = &foundFunction->second;
 	}
 
-	return *functionIter;
+	return functionPointer;
 }
 
-std::vector<Variable> Memory::GetVariables() const
+bool Memory::ChangeVariableValue(std::string const& name, double const value)
+{
+	auto foundVariable = m_variables.find(name);
+	if (foundVariable == m_variables.end())
+	{
+		return false;
+	}
+	//auto& [var_name, var_value] = *foundVariable;
+	foundVariable->second.SetValue(value);
+	ResetDependences(name); // name
+
+	return true;
+}
+
+std::map<std::string, Variable> Memory::GetVariables() const
 {
 	return m_variables;
 }
 
-std::vector<Function> Memory::GetFunctions() const
+std::map<std::string, Function> Memory::GetFunctions() const
 {
 	return m_functions;
 }
 
-bool Memory::AddFunction(Function function)
+bool Memory::AddFunction(std::string const& name, Function function)
 {
-	if (IsOperandNameAlreadyUsed(function.GetName()))
+	if (IsOperandNameAlreadyUsed(name) || !IsNameValid(name))
 	{
 		return false;
 	}
-	m_functions.push_back(function);
+	m_functions[name] = function;
 
 	return true;
 }
 
-bool Memory::AddVariable(Variable variable)
+bool Memory::AddVariable(std::string const& name, Variable variable)
 {
-	if (IsOperandNameAlreadyUsed(variable.GetName()))
+	if (IsOperandNameAlreadyUsed(name) || !IsNameValid(name))
 	{
 		return false;
 	}
-	m_variables.push_back(variable);
+	m_variables[name] = variable;
 
 	return true;
 }
 
-bool Memory::IsOperandNameAlreadyUsed(std::string name) const
+bool Memory::IsOperandNameAlreadyUsed(std::string const& name) const
 {
-	auto isOperandFoundByName = [name](Operand operandToCheck)
-	{
-		return operandToCheck.GetName() == name;
-	};
-	auto variableIter = std::find_if(m_variables.begin(), m_variables.end(), isOperandFoundByName);
-	auto functionIter = std::find_if(m_functions.begin(), m_functions.end(), isOperandFoundByName);
+	auto foundVariable = m_variables.find(name);
+	auto foundFunction = m_functions.find(name);
 
-	return (variableIter != m_variables.end()) && (functionIter != m_functions.end());
+	return (foundVariable != m_variables.end()) || (foundFunction != m_functions.end());
+}
+
+bool Memory::IsNameValid(std::string const& name) const
+{
+	std::regex reg(R"([a-zA-Z_][a-zA-Z0-9_]*)", std::regex_constants::icase);
+	std::smatch matchedResult;
+
+	return std::regex_match(name, matchedResult, reg);
+}
+
+void Memory::AddDependence(std::string const& operandName, std::string const& functionThatDependsOn)
+{
+	auto foundDepences = m_dependences.find(operandName);
+	if (foundDepences != m_dependences.end())
+	{
+		foundDepences->second.push_back(functionThatDependsOn);
+	}
+	else
+	{
+		std::vector newDependences = { functionThatDependsOn };
+		m_dependences[operandName] = newDependences;
+	}
+}
+
+void Memory::ResetDependences(std::string const& operandName)
+{
+	
+	if (auto foundDependences = m_dependences.find(operandName); foundDependences != m_dependences.end())
+	{
+		// не лучше ли перебирать по ссылке
+		for (auto& functionThatDependsOnName : foundDependences->second)
+		{
+			
+			if (auto foundFunction = m_functions.find(functionThatDependsOnName); foundFunction != m_functions.end())
+			{
+				foundFunction->second.ResetValue();
+				ResetDependences(functionThatDependsOnName);
+			}
+		}
+	}
 }

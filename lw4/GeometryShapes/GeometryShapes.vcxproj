@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{79b76b00-5cfa-465c-8944-1740fb80b9aa}</ProjectGuid>
-    <RootNamespace>CalculatorTests</RootNamespace>
+    <ProjectGuid>{512b3ba9-0d9f-43fa-af7f-d1856058ca2e}</ProjectGuid>
+    <RootNamespace>GeometryShapes</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -131,13 +131,27 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\Calculator\Calculator.cpp" />
-    <ClCompile Include="..\Calculator\Function.cpp" />
-    <ClCompile Include="..\Calculator\Memory.cpp" />
-    <ClCompile Include="..\Calculator\Operation.cpp" />
-    <ClCompile Include="..\Calculator\Variable.cpp" />
-    <ClCompile Include="CalculatorTests.cpp" />
+    <ClCompile Include="CCircle.cpp" />
+    <ClCompile Include="CLineSegment.cpp" />
+    <ClCompile Include="common.cpp" />
+    <ClCompile Include="CPoint.cpp" />
+    <ClCompile Include="CRectangle.cpp" />
+    <ClCompile Include="CShape.cpp" />
+    <ClCompile Include="CSolidShape.cpp" />
+    <ClCompile Include="CTriangle.cpp" />
     <ClCompile Include="main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="CCircle.h" />
+    <ClInclude Include="CLineSegment.h" />
+    <ClInclude Include="common.h" />
+    <ClInclude Include="CPoint.h" />
+    <ClInclude Include="CRectangle.h" />
+    <ClInclude Include="CShape.h" />
+    <ClInclude Include="CSolidShape.h" />
+    <ClInclude Include="CTriangle.h" />
+    <ClInclude Include="IShape.h" />
+    <ClInclude Include="ISolidShape.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

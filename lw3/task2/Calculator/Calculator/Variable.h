@@ -1,15 +1,18 @@
 #pragma once
-#include "Operand.h"
+#include <string>
 
-class Variable : public Operand
+class Variable
 {
 public:
-	Variable(std::string name)
-		:Operand(name)
+	Variable() = default;
+
+	Variable(double const value)
 	{
+		m_value = value;
 	}
 
-	void SetValue(double value);
-	double GetValue() const override;
+	void SetValue(double const value);
+	double GetValue() const;
+private:
+	double m_value = NAN;
 };
-
