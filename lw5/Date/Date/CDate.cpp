@@ -12,48 +12,59 @@ unsigned CDate::GetDaysInYear(unsigned year)
 	return IsYearLeap(year)? DAYS_IN_LEAP_YEAR: DAYS_IN_YEAR;
 }
 
-unsigned GetDaysInMonth(unsigned year, Month month)
+unsigned CDate::GetDaysInMonth(bool isYearLeap, Month month)
 {
 	switch (month)
 	{
 	case Month::JANUARY:
-		break;
+		return 31;
 	case Month::FEBRUARY:
-		break;
+		return isYearLeap? 29: 28;
 	case Month::MARCH:
-		break;
+		return 31;
 	case Month::APRIL:
-		break;
+		return 30;
 	case Month::MAY:
-		break;
+		return 31;
 	case Month::JUNE:
-		break;
+		return 30;
 	case Month::JULY:
-		break;
+		return 31;
 	case Month::AUGUST:
-		break;
+		return 31;
 	case Month::SEPTEMBER:
-		break;
+		return 30;
 	case Month::OCTOBER:
-		break;
+		return 31;
 	case Month::NOVEMBER:
-		break;
+		return 30;
 	case Month::DECEMBER:
-		break;
+		return 31;
 	default:
-		return -1;
+		return 0;
 	}
 }
 
 CDate::CDate(unsigned timestamp = 0)
 {
 	m_year = MIN_YEAR;
-	do
+	unsigned daysInYear = GetDaysInYear(m_year);
+	while (timestamp - daysInYear >= 0)
 	{
-		timestamp -= GetDaysInYear(m_year);
-		m_year + 1;
-	} while (timestamp >= 0);
-	timestamp += GetDaysInYear(m_year - 1);
+		timestamp -= daysInYear;
+		m_year++;
+		daysInYear = GetDaysInYear(m_year);
+	}
 
+	m_month = Month::JANUARY;
+	bool isYearLeap = IsYearLeap(m_year);
+	unsigned daysInMonth = GetDaysInMonth(isYearLeap, m_month);
+	while (timestamp - daysInMonth >= 0 && m_month < Month::DECEMBER)
+	{
+		timestamp -= daysInMonth;
+		m_month = static_cast<Month>(static_cast<char>(m_month) + 1);
+		daysInMonth = GetDaysInMonth(isYearLeap, m_month);
+	}
 
+	m_day = timestamp;
 }

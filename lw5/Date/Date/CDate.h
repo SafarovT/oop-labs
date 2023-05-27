@@ -1,14 +1,13 @@
 #pragma once
-#include <map>
 
-enum class Month
+enum class Month : char // in class with methods get all / get days
 {
 	JANUARY = 1, FEBRUARY, MARCH, APRIL,
 	MAY, JUNE, JULY, AUGUST, SEPTEMBER,
 	OCTOBER, NOVEMBER, DECEMBER
 };
 
-enum class WeekDay
+enum class WeekDay : char
 {
 	SUNDAY = 0, MONDAY, TUESDAY, WEDNESDAY,
 	THURSDAY, FRIDAY, SATURDAY
@@ -42,7 +41,7 @@ public:
 	// или после:
 	//	CDate date(1, January, 1970); --date;
 	// метод date.IsValid() должен вернуть false;
-	bool IsValid()const;
+	bool IsValid() const;
 private:
 	static const unsigned DAYS_IN_YEAR = 365;
 	static const unsigned DAYS_IN_LEAP_YEAR = 366;
@@ -55,5 +54,5 @@ private:
 
 	static bool IsYearLeap(unsigned year);
 	static unsigned GetDaysInYear(unsigned year);
-	static unsigned GetDaysInMonth(Month month);
+	static unsigned GetDaysInMonth(bool isYearLeap, Month month);
 };
