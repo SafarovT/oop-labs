@@ -1,13 +1,14 @@
 #pragma once
 #include "IShape.h"
 
-class CShape : public IShape
+class CShape : virtual public IShape
 {
 public:
 	CShape(uint32_t outlineColor, std::string shapeName)
 		: m_outlineColor(outlineColor)
-		, m_shapeName(shapeName)
+		, m_shapeName(std::move(shapeName)) //если по значению то std::move
 	{
+
 	}
 
 	CShape(std::string shapeName)

@@ -3,9 +3,9 @@
 
 double CLineSegment::GetPerimeter() const
 {
-	double differenceInX = pow(m_startPoint.x - m_endPoint.x, 2);
-	double differenceInY = pow(m_startPoint.y - m_endPoint.y, 2);
-	return sqrt(differenceInX + differenceInY) ;
+	double differenceInX = m_startPoint.x - m_endPoint.x;
+	double differenceInY = m_startPoint.y - m_endPoint.y;
+	return sqrt(differenceInX * differenceInX + differenceInY * differenceInY);
 }
 
 std::string CLineSegment::ToString() const
@@ -24,4 +24,9 @@ CPoint CLineSegment::GetStartPoint() const
 CPoint CLineSegment::GetEndPoint() const
 {
 	return m_endPoint;
+}
+
+void CLineSegment::Draw(ICanvas& canvas) const
+{
+	canvas.DrawLine(m_startPoint, m_endPoint, GetOutlineColor());
 }

@@ -1,9 +1,12 @@
 #pragma once
+#include "ICanvasDrawable.h"
 #include <string>
 
-class IShape
+class IShape : public ICanvasDrawable
 {
 public:
+	// виртуальный деструктор выяснить и доложить
+	virtual ~IShape() {};
 	virtual double GetArea() const = 0;
 	virtual double GetPerimeter() const = 0;
 	virtual std::string ToString() const = 0;

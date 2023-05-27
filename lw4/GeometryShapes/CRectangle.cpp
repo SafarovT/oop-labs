@@ -38,3 +38,19 @@ CPoint CRectangle::GetRightBottom() const
 {
 	return m_rightBottom;
 }
+
+void CRectangle::Draw(ICanvas& canvas) const
+{
+	CPoint leftTopPoint = m_leftTop;
+	CPoint rightBottomPoint = m_rightBottom;
+	CPoint rightTopPoint(rightBottomPoint.x, leftTopPoint.y);
+	CPoint leftBottomPoint(leftTopPoint.x, rightBottomPoint.y);
+	std::vector<CPoint> vertexes = {
+		leftTopPoint,
+		rightTopPoint,
+		rightBottomPoint,
+		leftBottomPoint
+	};
+
+	canvas.FillPolygon(vertexes, GetFillColor(), GetOutlineColor());
+}

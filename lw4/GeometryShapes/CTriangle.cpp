@@ -39,3 +39,14 @@ std::string CTriangle::ToString() const
 
 	return triangleInfo;
 }
+
+void CTriangle::Draw(ICanvas& canvas) const
+{
+	std::vector<CPoint> vertexes = {
+		GetVertex1(),
+		GetVertex2(),
+		GetVertex3()
+	};
+
+	canvas.FillPolygon(vertexes, GetFillColor(), GetOutlineColor());
+}

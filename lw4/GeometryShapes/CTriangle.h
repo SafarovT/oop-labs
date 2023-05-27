@@ -25,6 +25,7 @@ public:
 	CPoint GetVertex1() const;
 	CPoint GetVertex2() const;
 	CPoint GetVertex3() const;
+	void Draw(ICanvas& canvas) const override;
 private:
 	CPoint m_vertex1;
 	CPoint m_vertex2;
