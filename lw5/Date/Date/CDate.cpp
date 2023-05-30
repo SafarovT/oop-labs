@@ -1,70 +1,113 @@
 #include "CDate.h"
+#include <iostream>
 
-bool CDate::IsYearLeap(unsigned year)
+unsigned CDate::GetMaxTimeStamp()
 {
-	auto isYearMultipleOf = [year](unsigned divider) { return year / divider; };
-
-	return isYearMultipleOf(4) && (!isYearMultipleOf(100) || isYearMultipleOf(400));
+	return CDate(31, Month::DECEMBER, MAX_YEAR) - CDate(1, Month::JANUARY, MIN_YEAR);
 }
 
-unsigned CDate::GetDaysInYear(unsigned year)
+CDate::CDate(unsigned day, Month month, unsigned year)
 {
-	return IsYearLeap(year)? DAYS_IN_LEAP_YEAR: DAYS_IN_YEAR;
+	unsigned currentYear = MIN_YEAR;
+	for (; currentYear < year && currentYear < MAX_YEAR; currentYear++)
+	{
+		m_timestamp += GetDaysInYear(currentYear);
+	}
+
+	Month currentMonth = Month::JANUARY;
+	bool isYearLeap = IsYearLeap(currentYear);
+	while (currentMonth < month && currentMonth != Month::DECEMBER)
+	{
+		m_timestamp += GetDaysInMonth(isYearLeap, currentMonth);
+		currentMonth = GetNextMonth(currentMonth);
+	}
+
+	if (day > GetDaysInMonth(isYearLeap, currentMonth))
+	{
+		day = GetDaysInMonth(isYearLeap, currentMonth);
+	}
+
+	m_timestamp += day - 1;
 }
 
-unsigned CDate::GetDaysInMonth(bool isYearLeap, Month month)
+WeekDay CDate::GetWeekDay() const
 {
-	switch (month)
+	WeekDay weekDay = START_WEEK_DAY;
+	unsigned daysPassedInLastWeek = m_timestamp % DAYS_IN_WEEK;
+	for (unsigned i = 1; i <= daysPassedInLastWeek; i++)
 	{
-	case Month::JANUARY:
-		return 31;
-	case Month::FEBRUARY:
-		return isYearLeap? 29: 28;
-	case Month::MARCH:
-		return 31;
-	case Month::APRIL:
-		return 30;
-	case Month::MAY:
-		return 31;
-	case Month::JUNE:
-		return 30;
-	case Month::JULY:
-		return 31;
-	case Month::AUGUST:
-		return 31;
-	case Month::SEPTEMBER:
-		return 30;
-	case Month::OCTOBER:
-		return 31;
-	case Month::NOVEMBER:
-		return 30;
-	case Month::DECEMBER:
-		return 31;
-	default:
-		return 0;
+		weekDay = GetNextWeekDay(weekDay);
 	}
+
+	return weekDay;
 }
 
-CDate::CDate(unsigned timestamp = 0)
+unsigned CDate::GetDay() const
 {
-	m_year = MIN_YEAR;
-	unsigned daysInYear = GetDaysInYear(m_year);
-	while (timestamp - daysInYear >= 0)
+	unsigned dayAfterStartDate = m_timestamp + 1;
+	unsigned year = MIN_YEAR;
+	unsigned daysInYear = GetDaysInYear(year);
+	while (dayAfterStartDate > daysInYear)
 	{
-		timestamp -= daysInYear;
-		m_year++;
-		daysInYear = GetDaysInYear(m_year);
+		dayAfterStartDate -= daysInYear;
+		year++;
+		daysInYear = GetDaysInYear(year);
 	}
 
-	m_month = Month::JANUARY;
-	bool isYearLeap = IsYearLeap(m_year);
-	unsigned daysInMonth = GetDaysInMonth(isYearLeap, m_month);
-	while (timestamp - daysInMonth >= 0 && m_month < Month::DECEMBER)
+	Month month = Month::JANUARY;
+	bool isYearLeap = IsYearLeap(year);
+	unsigned daysInMonth = GetDaysInMonth(isYearLeap, month);
+	while (dayAfterStartDate > daysInMonth)
 	{
-		timestamp -= daysInMonth;
-		m_month = static_cast<Month>(static_cast<char>(m_month) + 1);
-		daysInMonth = GetDaysInMonth(isYearLeap, m_month);
+		dayAfterStartDate -= daysInMonth;
+		month = GetNextMonth(month);
+		daysInMonth = GetDaysInMonth(isYearLeap, month);
 	}
 
-	m_day = timestamp;
+	return dayAfterStartDate;
+}
+
+Month CDate::GetMonth() const
+{
+	unsigned dayAfterStartDate = m_timestamp + 1;
+	unsigned year = MIN_YEAR;
+	unsigned daysInYear = GetDaysInYear(year);
+	while (dayAfterStartDate > daysInYear)
+	{
+		dayAfterStartDate -= daysInYear;
+		year++;
+		daysInYear = GetDaysInYear(year);
+	}
+
+	Month month = Month::JANUARY;
+	bool isYearLeap = IsYearLeap(year);
+	unsigned daysInMonth = GetDaysInMonth(isYearLeap, month);
+	while (dayAfterStartDate > daysInMonth)
+	{
+		dayAfterStartDate -= daysInMonth;
+		month = GetNextMonth(month);
+		daysInMonth = GetDaysInMonth(isYearLeap, month);
+	}
+
+	return month;
+}
+
+unsigned CDate::GetYear() const
+{
+	unsigned dayAfterStartDate = m_timestamp + 1;
+	unsigned year = MIN_YEAR;
+	unsigned daysInYear = GetDaysInYear(year);
+	while (dayAfterStartDate > daysInYear)
+	{
+		dayAfterStartDate -= daysInYear;
+		year++;
+		daysInYear = GetDaysInYear(year);
+	}
+
+	return year;
+}
+
+bool CDate::IsValid() const
+{
+	return m_timestamp <= GetMaxTimeStamp();
 }

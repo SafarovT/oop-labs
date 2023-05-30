@@ -1,58 +1,73 @@
 #pragma once
-
-enum class Month : char // in class with methods get all / get days
-{
-	JANUARY = 1, FEBRUARY, MARCH, APRIL,
-	MAY, JUNE, JULY, AUGUST, SEPTEMBER,
-	OCTOBER, NOVEMBER, DECEMBER
-};
-
-enum class WeekDay : char
-{
-	SUNDAY = 0, MONDAY, TUESDAY, WEDNESDAY,
-	THURSDAY, FRIDAY, SATURDAY
-};
+#include "Month.h"
+#include "Year.h"
+#include "WeekDay.h"
 
 class CDate
 {
 public:
-	CDate(unsigned day, Month month, unsigned yaer)
-		: m_year(yaer)
-		, m_month(month)
-		, m_day(day)
+	CDate(unsigned day, Month month, unsigned year);
+
+	CDate(unsigned timestamp)
+		: m_timestamp(timestamp)
 	{};
 
-	CDate(unsigned timestamp = 0);
+	CDate& operator ++()
+	{
+		++m_timestamp;
+		return *this;
+	}
 
-	// возвращает день месяца (от 1 до 31)
+	CDate operator ++(int)
+	{
+		CDate tmpCopy(*this);
+		++*this;
+		return tmpCopy;
+	}
+
+	CDate& operator --()
+	{
+		--m_timestamp;
+		return *this;
+	}
+
+	CDate& operator --(int)
+	{	
+		CDate tmpCopy(*this);
+		--*this;
+		return tmpCopy;
+	}
+
+	CDate operator +(int daysCount) const
+	{
+		return CDate(this->m_timestamp + daysCount);
+	}
+
+	CDate operator -(int daysCount) const
+	{
+		return CDate(this->m_timestamp - daysCount);
+	}
+
+	int operator -(CDate date) const
+	{
+		return this->m_timestamp - date.m_timestamp;
+	}
+
 	unsigned GetDay() const;
 
-	// возвращает месяц
 	Month GetMonth() const;
 
-	// возвращает год
 	unsigned GetYear() const;
 
-	// возвращает день недели
 	WeekDay GetWeekDay() const;
 
-	// возвращает информацию о корректности хранимой даты.
-	// Например, после вызова CDate date(99, static_cast<Month>(99), 10983);
-	// или после:
-	//	CDate date(1, January, 1970); --date;
-	// метод date.IsValid() должен вернуть false;
 	bool IsValid() const;
 private:
-	static const unsigned DAYS_IN_YEAR = 365;
-	static const unsigned DAYS_IN_LEAP_YEAR = 366;
 	static const unsigned MIN_YEAR = 1970;
-	static const unsigned MAX_YAER = 9999;
+	static const unsigned MAX_YEAR = 9999;
+	static const WeekDay START_WEEK_DAY = WeekDay::THURSDAY;
 
-	unsigned m_year;
-	Month m_month;
-	unsigned m_day;
-
-	static bool IsYearLeap(unsigned year);
-	static unsigned GetDaysInYear(unsigned year);
-	static unsigned GetDaysInMonth(bool isYearLeap, Month month);
+	static unsigned GetMaxTimeStamp();
+	bool m_isValid = true;
+	unsigned m_timestamp = 0;
 };
