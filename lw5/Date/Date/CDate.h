@@ -1,4 +1,5 @@
 #pragma once
+#include <iostream>
 #include "Month.h"
 #include "Year.h"
 #include "WeekDay.h"
@@ -6,6 +7,8 @@
 class CDate
 {
 public:
+	CDate() = default;
+
 	CDate(unsigned day, Month month, unsigned year);
 
 	CDate(unsigned timestamp)
@@ -53,6 +56,50 @@ public:
 		return this->m_timestamp - date.m_timestamp;
 	}
 
+	CDate& operator +=(int daysCount)
+	{
+		m_timestamp += daysCount;
+		
+		return *this;
+	}
+
+	CDate& operator -=(int daysCount)
+	{
+		m_timestamp -= daysCount;
+
+		return *this;
+	}
+
+	bool operator ==(CDate const& date)
+	{
+		return this->m_timestamp == date.m_timestamp;
+	}
+
+	bool operator !=(CDate const& date)
+	{
+		return !(*this == date);
+	}
+
+	bool operator <(CDate const& date)
+	{
+		return this->m_timestamp < date.m_timestamp;
+	}
+
+	bool operator >(CDate const& date)
+	{
+		return this->m_timestamp > date.m_timestamp;
+	}
+
+	bool operator >=(CDate const& date)
+	{
+		return this->m_timestamp >= date.m_timestamp;
+	}
+
+	bool operator <=(CDate const& date)
+	{
+		return this->m_timestamp <= date.m_timestamp;
+	}
+
 	unsigned GetDay() const;
 
 	Month GetMonth() const;
@@ -68,6 +115,33 @@ private:
 	static const WeekDay START_WEEK_DAY = WeekDay::THURSDAY;
 
 	static unsigned GetMaxTimeStamp();
-	bool m_isValid = true;
 	unsigned m_timestamp = 0;
 };
+
+//std::ostream& operator<<(std::ostream& stream, CDate const& date)
+//{
+//	stream << date.GetDay() << '.' << static_cast<char>(date.GetMonth()) << '.' << date.GetYear();
+//
+//	return stream;
+//}
+
+//std::istream& operator>>(std::istream& stream, CDate& date)
+//{
+//	unsigned day = 1;
+//	unsigned monthNumber = 1;
+//	unsigned year = 1;
+//	if (
+//		(stream >> day) && (stream.get() == '.')
+//		&& (stream >> monthNumber) && (stream.get() == '.')
+//		&& (stream >> year)
+//		)
+//	{
+//		date = CDate(day, static_cast<Month>(monthNumber), year);
+//	}
+//	else
+//	{
+//		stream.setstate(std::ios_base::failbit | stream.rdstate());
+//	}
+//
+//	return stream;
+//}
