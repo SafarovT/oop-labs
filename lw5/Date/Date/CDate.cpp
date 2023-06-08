@@ -1,30 +1,44 @@
 #include "CDate.h"
-#include <iostream>
 
-unsigned CDate::GetMaxTimeStamp()
+CDate::Date CDate::TimestampToDate(unsigned timestamp)
 {
-	return CDate(31, Month::DECEMBER, MAX_YEAR) - CDate(1, Month::JANUARY, MIN_YEAR);
+	unsigned day = timestamp + 1;
+	unsigned year = MIN_YEAR;
+	unsigned daysInYear = GetDaysInYear(year); // попробовать за константное время
+	while (day > daysInYear)
+	{
+		day -= daysInYear;
+		year++;
+		daysInYear = GetDaysInYear(year);
+	}
+
+	Month month = Month::JANUARY;
+	bool isYearLeap = IsYearLeap(year);
+	unsigned daysInMonth = GetDaysInMonth(isYearLeap, month);
+	while (day > daysInMonth)
+	{
+		day -= daysInMonth;
+		month = GetNextMonth(month);
+		daysInMonth = GetDaysInMonth(isYearLeap, month);
+	}
+
+	return { day, month, year };
 }
 
 CDate::CDate(unsigned day, Month month, unsigned year)
 {
 	unsigned currentYear = MIN_YEAR;
-	for (; currentYear < year && currentYear < MAX_YEAR; currentYear++)
+	for (; currentYear < year && currentYear < MAX_YEAR; currentYear++) // O(1)
 	{
 		m_timestamp += GetDaysInYear(currentYear);
 	}
 
 	Month currentMonth = Month::JANUARY;
 	bool isYearLeap = IsYearLeap(currentYear);
-	while (currentMonth < month && currentMonth != Month::DECEMBER)
+	while (currentMonth < month && currentMonth < Month::DECEMBER)
 	{
 		m_timestamp += GetDaysInMonth(isYearLeap, currentMonth);
 		currentMonth = GetNextMonth(currentMonth);
-	}
-
-	if (day > GetDaysInMonth(isYearLeap, currentMonth))
-	{
-		day = GetDaysInMonth(isYearLeap, currentMonth);
 	}
 
 	m_timestamp += day - 1;
@@ -44,70 +58,20 @@ WeekDay CDate::GetWeekDay() const
 
 unsigned CDate::GetDay() const
 {
-	unsigned dayAfterStartDate = m_timestamp + 1;
-	unsigned year = MIN_YEAR;
-	unsigned daysInYear = GetDaysInYear(year);
-	while (dayAfterStartDate > daysInYear)
-	{
-		dayAfterStartDate -= daysInYear;
-		year++;
-		daysInYear = GetDaysInYear(year);
-	}
-
-	Month month = Month::JANUARY;
-	bool isYearLeap = IsYearLeap(year);
-	unsigned daysInMonth = GetDaysInMonth(isYearLeap, month);
-	while (dayAfterStartDate > daysInMonth)
-	{
-		dayAfterStartDate -= daysInMonth;
-		month = GetNextMonth(month);
-		daysInMonth = GetDaysInMonth(isYearLeap, month);
-	}
-
-	return dayAfterStartDate;
+	return TimestampToDate(m_timestamp).day;
 }
 
 Month CDate::GetMonth() const
 {
-	unsigned dayAfterStartDate = m_timestamp + 1;
-	unsigned year = MIN_YEAR;
-	unsigned daysInYear = GetDaysInYear(year);
-	while (dayAfterStartDate > daysInYear)
-	{
-		dayAfterStartDate -= daysInYear;
-		year++;
-		daysInYear = GetDaysInYear(year);
-	}
-
-	Month month = Month::JANUARY;
-	bool isYearLeap = IsYearLeap(year);
-	unsigned daysInMonth = GetDaysInMonth(isYearLeap, month);
-	while (dayAfterStartDate > daysInMonth)
-	{
-		dayAfterStartDate -= daysInMonth;
-		month = GetNextMonth(month);
-		daysInMonth = GetDaysInMonth(isYearLeap, month);
-	}
-
-	return month;
+	return TimestampToDate(m_timestamp).month;
 }
 
 unsigned CDate::GetYear() const
 {
-	unsigned dayAfterStartDate = m_timestamp + 1;
-	unsigned year = MIN_YEAR;
-	unsigned daysInYear = GetDaysInYear(year);
-	while (dayAfterStartDate > daysInYear)
-	{
-		dayAfterStartDate -= daysInYear;
-		year++;
-		daysInYear = GetDaysInYear(year);
-	}
-
-	return year;
+	return TimestampToDate(m_timestamp).year;
 }
 
 bool CDate::IsValid() const
 {
-	return m_timestamp <= GetMaxTimeStamp();
+	return m_timestamp <= MAX_TIMESTAMP;
 }

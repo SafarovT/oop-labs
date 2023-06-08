@@ -4,6 +4,16 @@
 
 SCENARIO("Создание различных дат и проверка их валидности")
 {
+	WHEN("Дата на момент сдачи лабы")
+	{
+		CDate date(1, Month::JUNE, 2023);
+
+		THEN("Был четверг")
+		{
+			CHECK(date.GetWeekDay() == WeekDay::THURSDAY);
+		}
+	}
+
 	WHEN("Создаем дату, иницилизируя каждое из полей")
 	{
 		CDate date(10, Month::JULY, 2004);
@@ -17,13 +27,14 @@ SCENARIO("Создание различных дат и проверка их в
 		}
 	}
 
-	WHEN("Создаем 29 фераля в невесокосный год")
+	WHEN("Создаем 29 фераля в невисокосный год")
 	{
 		CDate date(29, Month::FEBRUARY, 2001);
 
-		THEN("Проставится 28 фераля")
+		THEN("Будет 1 марта")
 		{
-			CHECK(date.GetDay() == 28);
+			CHECK(date.GetDay() == 1);
+			CHECK(date.GetMonth() == Month::MARCH);
 		}
 	}
 
@@ -143,6 +154,19 @@ SCENARIO("Проверка определения валидности дат")
 			THEN("Результат не валиден")
 			{
 				CHECK(!date.IsValid());
+			}
+
+			AND_WHEN("Пытаемся изменить не валидную дату")
+			{
+				CDate date2(date);
+				date2++;
+
+				THEN("Дата не изменилась")
+				{
+					CHECK(date2.GetDay() == date.GetDay());
+					CHECK(date2.GetMonth() == date.GetMonth());
+					CHECK(date2.GetYear() == date.GetYear());
+				}
 			}
 		}
 	}
@@ -301,13 +325,13 @@ SCENARIO("Проведение операция сложения и вычита
 			}
 		}
 
-		WHEN("Прибавляем отрицательное количество дней")
+		WHEN("Прибавлчем к количеству дней дату")
 		{
-			date = date + -10;
+			date = 10 + date;
 
-			THEN("Числое дней уменьшилось корректно")
+			THEN("Число дней увеличилось корректно")
 			{
-				CHECK(date.GetDay() == 5);
+				CHECK(date.GetDay() == 25);
 			}
 		}
 
@@ -341,16 +365,6 @@ SCENARIO("Проведение операция сложения и вычита
 			THEN("Числое дней уменьшилос корректно")
 			{
 				CHECK(date.GetDay() == 5);
-			}
-		}
-
-		WHEN("Вычитаем отрицательное количество дней")
-		{
-			date = date - -10;
-
-			THEN("Числое дней увеличилось корректно")
-			{
-				CHECK(date.GetDay() == 25);
 			}
 		}
 
@@ -439,7 +453,7 @@ SCENARIO("Проверка операторов += и -=")
 
 SCENARIO("Проверка операторов ввода вывода")
 {
-	/*GIVEN("Дата 29.2.8000")
+	GIVEN("Дата 29.2.8000")
 	{
 		CDate date(29, Month::FEBRUARY, 8000);
 
@@ -479,7 +493,7 @@ SCENARIO("Проверка операторов ввода вывода")
 				}
 			}
 		}
-	}*/
+	}
 }
 
 SCENARIO("Проверка операторов сравнения")
@@ -511,8 +525,45 @@ SCENARIO("Проверка операторов сравнения")
 			CHECK((date != date2));
 			CHECK((date < date2));
 			CHECK(!(date > date2));
+			CHECK((date2 > date));
 			CHECK((date <= date2));
+			CHECK(!(date2 <= date));
 			CHECK(!(date >= date2));
 		}
+	}
+
+	WHEN("")
+	{
+		CDate date1(1, Month::JANUARY, 1970);
+		CDate date2(1, Month::JANUARY, 2370);
+		std::cout << date2 - date1 << std::endl;
+	}
+
+	WHEN("")
+	{
+		CDate date1(1, Month::JANUARY, 1970);
+		CDate date2(1, Month::JANUARY, 2070);
+		std::cout << date2 - date1 << std::endl;
+	}
+
+	WHEN("")
+	{
+		CDate date1(1, Month::JANUARY, 2070);
+		CDate date2(1, Month::JANUARY, 2170);
+		std::cout << date2 - date1 << std::endl;
+	}
+	
+	WHEN("")
+	{
+		CDate date1(1, Month::JANUARY, 2170);
+		CDate date2(1, Month::JANUARY, 2270);
+		std::cout << date2 - date1 << std::endl;
+	}
+
+	WHEN("")
+	{
+		CDate date1(1, Month::JANUARY, 2270);
+		CDate date2(1, Month::JANUARY, 2370);
+		std::cout << date2 - date1 << std::endl;
 	}
 }
