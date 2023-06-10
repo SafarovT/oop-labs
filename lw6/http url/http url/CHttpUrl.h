@@ -1,7 +1,8 @@
 #pragma once
 #include <string>
 #include <regex>
-#include "CUrlParsingError.h"
+#include "CUrlParsingException.h"
+#include "common.h"
 
 class CHttpUrl
 {
@@ -19,11 +20,16 @@ public:
 		std::string const& document,
 		Protocol protocol = Protocol::HTTP
 	)
-		: m_domain(domain)
-		, m_document(document)
-		, m_protocol(protocol)
+	try
+		: m_domain(ValidateDomain(domain))
+		, m_document(ValidateDocument(document))
+		, m_protocol(ValidateProtocol(protocol))
 		, m_port(GetDefaultProtocolPort(protocol))
 	{
+	}
+	catch (std::invalid_argument& exception)
+	{
+		throw exception;
 	}
 
 	CHttpUrl(
@@ -32,11 +38,16 @@ public:
 		Protocol protocol,
 		unsigned short port
 	)
-		: m_domain(domain)
-		, m_document(document)
-		, m_protocol(protocol)
-		, m_port(port)
+	try
+		: m_domain(ValidateDomain(domain))
+		, m_document(ValidateDocument(document))
+		, m_protocol(ValidateProtocol(protocol))
+		, m_port(ValidatePort(port))
 	{
+	}
+	catch (std::invalid_argument& exception)
+	{
+		throw exception;
 	}
 
 	std::string GetURL() const;
@@ -47,6 +58,7 @@ public:
 private:
 	static const unsigned short MIN_PORT = 1;
 	static const unsigned short MAX_PORT = 65535;
+	static const char URL_DELIMITER = '/';
 
 	std::string m_domain;
 	std::string m_document;
@@ -54,10 +66,12 @@ private:
 	unsigned short m_port;
 
 	static std::string ProtocolToString(Protocol protocol);
+	static Protocol StringToProtocol(std::string const& protocol);
 	static unsigned short GetDefaultProtocolPort(Protocol protocol);
+	static unsigned short ReadPort(std::string const& portStr, Protocol protocol);
 	
-	static void ValidateDomain(std::string const& domain);
-	static void ValidateDocument(std::string& document);
-	static void ValidateProtocol(Protocol protocol);
-	static void ValidatePort(unsigned short port);
+	static std::string ValidateDomain(std::string const& domain);
+	static std::string ValidateDocument(std::string const& document);
+	static Protocol ValidateProtocol(Protocol protocol);
+	static unsigned short ValidatePort(unsigned short port);
 };

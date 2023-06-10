@@ -130,6 +130,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\http url\CHttpUrl.cpp" />
+    <ClCompile Include="..\http url\common.cpp" />
+    <ClCompile Include="..\http url\CUrlParsingException.cpp" />
     <ClCompile Include="HttpUrlTests.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>

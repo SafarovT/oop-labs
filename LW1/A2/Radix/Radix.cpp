@@ -18,15 +18,17 @@ namespace
 
 	int GetDigitValue(char digit)
 	{
-		if (digit >= 'A')
-		{
-			return digit - '0' + 10;
-		}
-		else
-		{
-			return digit - '0';
-		}
+		size_t value = DIGITS.find(digit);
+		return value;
 	}
+
+	bool IsDigitCorrectForRadix(int radix, char digit)
+	{
+		size_t value = DIGITS.find(digit);
+		return (value == string::npos || value >= radix);
+	}
+
+	bool IsOperationOverflowing()
 }
 
 int StringToInt(std::string const& str, int radix)
@@ -43,14 +45,6 @@ int StringToInt(std::string const& str, int radix)
 		firstStringPos = 1;
 		numberSign = -1;
 	}
-	for (size_t i = firstStringPos; i < str.length(); i++)
-	{
-		size_t pos = DIGITS.find(toupper(str[i]));
-		if (pos == string::npos || pos >= radix)
-		{
-			throw invalid_argument("Invalid digit in number");
-		}
-	} // объеденить со следующим циклом
 
 	int number = 0;
 
@@ -58,7 +52,10 @@ int StringToInt(std::string const& str, int radix)
 	{
 		char digit = toupper(str[i]);
 		int digitValue = GetDigitValue(digit) * numberSign;
-		
+		if (IsDigitCorrectForRadix(radix, digit))
+		{
+			throw invalid_argument("Invalid digit in number");
+		}
 		if (number > (MAX_INT - digitValue) / radix)
 		{
 			throw out_of_range("Digit is not in range");
