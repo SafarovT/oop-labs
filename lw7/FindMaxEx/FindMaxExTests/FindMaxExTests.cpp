@@ -16,7 +16,7 @@ TEST_CASE("Empty vector")
 	std::vector<int> arr = {};
 	int maxValue = 1;
 	bool isOperationSuccess = FindMax(arr, maxValue);
-	CHECK(!isOperationSuccess);
+	CHECK_FALSE(isOperationSuccess);
 	CHECK(maxValue == 1);
 }
 
