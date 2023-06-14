@@ -52,16 +52,6 @@ CMyString::CMyString(CMyString const& str)
 	m_pString[m_length] = ZERO_CODE_CHAR;
 }
 
-/* Copy with \0 in end
-CMyString::CMyString(CMyString const& str)
-	: m_pString(new char[str.m_length + 1])
-	, m_length(str.m_length)
-{
-	copy(str.GetStringData(), str.GetStringData() + str.m_length, m_pString);
-	m_pString[m_length] = ZERO_CODE_CHAR;
-}
-*/
-
 CMyString::CMyString(CMyString&& str) noexcept
 	: m_pString(str.m_pString)
 	, m_length(str.m_length)
@@ -133,29 +123,31 @@ CMyString& CMyString::operator =(CMyString&& str) noexcept
 	return *this;
 }
 
-CMyString CMyString::operator +(CMyString str) const
+CMyString CMyString::operator +(CMyString str)
 {
 	if (GetLength() >= SIZE_MAX - str.GetLength())
 	{
 		throw logic_error("String length cant be larger then max size_t value");
 	}
+
 	size_t resultLength = GetLength() + str.GetLength();
 	char* pResult = new char(resultLength + 1);
-	copy(GetStringData(), GetStringData() + GetLength(), pResult);
-	copy(str.GetStringData(), str.GetStringData() + str.GetLength(), pResult + GetLength());
-	pResult[resultLength] = ZERO_CODE_CHAR;
+	strcpy_s(pResult, GetLength() + 1, GetStringData());
+	strcat_s(pResult, resultLength + 2, str.GetStringData());
 
 	return CMyString(pResult, resultLength);
 }
 
-CMyString CMyString::operator +(std::string const& stlString) const
+CMyString CMyString::operator +(std::string const& stlString)
 {
-	return *this;
+	CMyString str2(stlString);
+	return *this + str2;
 }
 
-CMyString CMyString::operator +(const char* pString) const
+CMyString CMyString::operator +(const char* pString)
 {
-	return *this;
+	CMyString str2(pString);
+	return *this + str2;
 }
 
 CMyString& CMyString::operator +=(CMyString str)

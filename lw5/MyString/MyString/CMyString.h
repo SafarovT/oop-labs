@@ -23,9 +23,9 @@ public:
 
 	CMyString& operator =(CMyString const& str);
 	CMyString& operator =(CMyString&& str) noexcept;
-	CMyString operator +(CMyString str) const;
-	CMyString operator +(std::string const& stlString) const;
-	CMyString operator +(const char* pString) const;
+	CMyString operator +(CMyString str);
+	CMyString operator +(std::string const& stlString);
+	CMyString operator +(const char* pString);
 	CMyString& operator +=(CMyString str);
 	std::strong_ordering operator<=>(CMyString str) const;
 	bool operator==(CMyString str) const;
