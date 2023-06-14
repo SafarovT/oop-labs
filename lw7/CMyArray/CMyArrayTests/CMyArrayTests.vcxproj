@@ -127,6 +127,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\CMyArray\CMyArray.cpp" />
     <ClCompile Include="CMyArrayTests.cpp" />
     <ClCompile Include="main.cpp" />
   </ItemGroup>
