@@ -17,14 +17,19 @@ class CStringStack
 {
 public:
 	bool Empty() const;
-	std::string Top() const;
+	std::string GetTop() const;
 	void Push(std::string str);
 	void Pop();
+	void Clear();
+	size_t GetSize() const;
 
 	CStringStack() = default;
 	~CStringStack();
 	CStringStack(CStringStack const& stack);
 	CStringStack(CStringStack&& stack) noexcept;
+	CStringStack& operator =(CStringStack const& stack);
+	CStringStack& operator =(CStringStack&& stack) noexcept;
 private:
 	StackNode* m_top = nullptr;
+	size_t m_size = 0;
 };
