@@ -180,7 +180,7 @@ char& CMyString::operator [](size_t index)
 {
 	if (index >= m_length)
 	{
-		throw logic_error("Index is out of string range");
+		throw out_of_range("Index is out of string range");
 	}
 
 	return m_pString[index];
@@ -190,7 +190,7 @@ const char& CMyString::operator [](size_t index) const
 {
 	if (index >= m_length)
 	{
-		throw invalid_argument("Index is out of string range");
+		throw out_of_range("Index is out of string range");
 	}
 
 	return m_pString[index];
