@@ -122,6 +122,8 @@ SCENARIO("Работа с несколькими стеками строк од�
 				stack1.Pop();
 				stack2.Pop();
 				CHECK(stack2.GetTop() == stack1.GetTop());
+				stack1.Pop();
+				stack2.Pop();
 				CHECK(stack1.Empty());
 				CHECK(stack2.Empty());
 			}
@@ -142,17 +144,18 @@ SCENARIO("Работа с несколькими стеками строк од�
 		{
 			stack1 = std::move(stack2);
 
+			THEN("stack 2 пустой")
+			{
+				CHECK(stack2.Empty());
+			}
+
 			THEN("Второй стек остался незименными, в первом лежат теперь все три элемента в корректном порядке")
 			{
-				CHECK(stack2.GetTop() == stack1.GetTop());
+				CHECK(stack1.GetTop() == "Third");
 				stack1.Pop();
-				stack2.Pop();
-				CHECK(stack2.GetTop() == stack1.GetTop());
+				CHECK(stack1.GetTop() == "Second");
 				stack1.Pop();
-				stack2.Pop();
-				CHECK(stack2.GetTop() == stack1.GetTop());
-				CHECK(stack1.Empty());
-				CHECK(stack2.Empty());
+				CHECK(stack1.GetTop() == "First");
 			}
 		}
 
@@ -173,15 +176,15 @@ SCENARIO("Работа со стеками целочисленных значе
 {
 	CMyStack<int> stack;
 
+	THEN("Длина стека равна 0")
+	{
+		CHECK(stack.Empty());
+	}
+
 	WHEN("Кладем значение в стек")
 	{
 		stack.Push(1234);
 
-		THEN("Длина стека равна 0")
-		{
-			CHECK(stack.Empty());
-		}
-		
 		THEN("Значение стека изменилось")
 		{
 			CHECK(stack.GetSize() == 1);
@@ -214,14 +217,14 @@ SCENARIO("Работа со стеками чисел с дробной част
 {
 	CMyStack<double> stack;
 
+	THEN("Длина стека равна 0")
+	{
+		CHECK(stack.Empty());
+	}
+
 	WHEN("Кладем значение в стек")
 	{
 		stack.Push(1.3456);
-
-		THEN("Длина стека равна 0")
-		{
-			CHECK(stack.Empty());
-		}
 
 		THEN("Значение стека изменилось")
 		{

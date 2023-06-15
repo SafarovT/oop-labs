@@ -121,8 +121,8 @@ SCENARIO("Работа с несколькими стеками одноврем
 				stack1.Pop();
 				stack2.Pop();
 				CHECK(stack2.GetTop() == stack1.GetTop());
-				CHECK(stack1.Empty());
-				CHECK(stack2.Empty());
+				CHECK_FALSE(stack1.Empty());
+				CHECK_FALSE(stack2.Empty());
 			}
 
 			AND_WHEN("Изменяем изначальный стек")
@@ -143,14 +143,12 @@ SCENARIO("Работа с несколькими стеками одноврем
 
 			THEN("Второй стек остался незименными, в первом лежат теперь все три элемента в корректном порядке")
 			{
-				CHECK(stack2.GetTop() == stack1.GetTop());
+				CHECK(stack1.GetTop() == "Third");
 				stack1.Pop();
-				stack2.Pop();
-				CHECK(stack2.GetTop() == stack1.GetTop());
+				CHECK(stack1.GetTop() == "Second");
 				stack1.Pop();
-				stack2.Pop();
-				CHECK(stack2.GetTop() == stack1.GetTop());
-				CHECK(stack1.Empty());
+				CHECK(stack1.GetTop() == "First");
+				CHECK_FALSE(stack1.Empty());
 				CHECK(stack2.Empty());
 			}
 		}

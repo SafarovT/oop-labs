@@ -107,12 +107,19 @@ template <typename T>
 CMyStack<T>::CMyStack(CMyStack<T> const& stack)
 	: m_size(stack.GetSize())
 {
-	StackNode* stackNode = stack.m_top;
-	m_top = new StackNode(move(stackNode->value), nullptr);
-	while (stackNode->next != nullptr)
+	StackNode* node = stack.m_top;
+	if (node == nullptr)
 	{
-		stackNode = stackNode->next;
-		m_top = new StackNode(move(stackNode->value), m_top);
+		m_top = nullptr;
+		return;
+	}
+	m_top = new StackNode(node->value, nullptr);
+	StackNode* prev = m_top;
+	while (node->next != nullptr)
+	{
+		node = node->next;
+		prev->next = new StackNode(node->value, nullptr);
+		prev = prev->next;
 	}
 }
 
@@ -141,7 +148,10 @@ CMyStack<T>& CMyStack<T>::operator =(CMyStack<T>&& stack) noexcept
 {
 	if (&stack != this)
 	{
-		*this = CMyStack(stack);
+		m_top = stack.m_top;
+		m_size = stack.m_size;
+		stack.m_top = nullptr;
+		stack.m_size = 0;
 	}
 
 	return *this;
