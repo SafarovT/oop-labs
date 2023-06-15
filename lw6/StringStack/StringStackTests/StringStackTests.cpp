@@ -121,7 +121,8 @@ SCENARIO("Работа с несколькими стеками одноврем
 				stack1.Pop();
 				stack2.Pop();
 				CHECK(stack2.GetTop() == stack1.GetTop());
-				CHECK(stack1.Empty() && stack2.Empty());
+				CHECK(stack1.Empty());
+				CHECK(stack2.Empty());
 			}
 
 			AND_WHEN("Изменяем изначальный стек")
@@ -149,7 +150,8 @@ SCENARIO("Работа с несколькими стеками одноврем
 				stack1.Pop();
 				stack2.Pop();
 				CHECK(stack2.GetTop() == stack1.GetTop());
-				CHECK(stack1.Empty() && stack2.Empty());
+				CHECK(stack1.Empty());
+				CHECK(stack2.Empty());
 			}
 		}
 
