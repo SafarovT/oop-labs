@@ -1,5 +1,5 @@
 #include "CStringStack.h"
-#include <iostream>
+#include <algorithm>
 
 namespace
 {
@@ -96,7 +96,9 @@ CStringStack& CStringStack::operator =(CStringStack const& stack)
 {
 	if (&stack != this)
 	{
-		*this = move(CStringStack(stack));
+		CStringStack stackToCopy(stack);
+		swap(m_top, stackToCopy.m_top);
+		swap(m_size, stackToCopy.m_size);
 	}
 
 	return *this;
@@ -106,6 +108,7 @@ CStringStack& CStringStack::operator =(CStringStack&& stack) noexcept
 {
 	if (&stack != this)
 	{
+		delete m_top;
 		m_top = stack.m_top;
 		m_size = stack.m_size;
 		stack.m_top = nullptr;

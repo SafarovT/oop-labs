@@ -1,4 +1,5 @@
 #pragma once
+#include <algorithm>
 #include <stdexcept>
 
 namespace
@@ -137,7 +138,9 @@ CMyStack<T>& CMyStack<T>::operator =(CMyStack<T> const& stack)
 {
 	if (&stack != this)
 	{
-		*this = CMyStack(stack);
+		CMyStack stackToCopy(stack);
+		std::swap(m_top, stackToCopy.m_top);
+		std::swap(m_size, stackToCopy.m_size);
 	}
 
 	return *this;

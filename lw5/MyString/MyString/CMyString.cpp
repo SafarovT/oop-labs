@@ -16,11 +16,8 @@ CMyString::CMyString()
 }
 
 CMyString::CMyString(const char* pString)
-	: m_pString(new char[strlen(pString) + 1])
-	, m_length(strlen(pString))
+	: CMyString(pString, strlen(pString)) // strlen использовать только один раз и использовать делигирующий конструктор
 {
-	copy(pString, pString + m_length, m_pString);
-	m_pString[m_length] = ZERO_CODE_CHAR;
 }
 
 CMyString::CMyString(const char* pString, size_t length)
@@ -31,12 +28,16 @@ CMyString::CMyString(const char* pString, size_t length)
 	m_pString[m_length] = ZERO_CODE_CHAR;
 }
 
-CMyString::CMyString(string const& stlString)
-	: m_pString(new char[stlString.size() + 1])
-	, m_length(stlString.size())
+CMyString::CMyString(string const& stlString) // тоже делигирующий конструктор
+	: CMyString(stlString.data())
 {
-	copy(stlString.begin(), stlString.end(), m_pString);
-	m_pString[m_length] = ZERO_CODE_CHAR;
+}
+
+
+CMyString::CMyString(char* pString, size_t length, bool boolVar)
+	: m_pString(pString)
+	, m_length(length)
+{
 }
 
 CMyString::~CMyString()
@@ -44,12 +45,9 @@ CMyString::~CMyString()
 	delete[] m_pString;
 }
 
-CMyString::CMyString(CMyString const& str)
-	: m_pString(new char[str.GetLength() + 1])
-	, m_length(str.GetLength())
+CMyString::CMyString(CMyString const& str) // так же использовать делигирующий конструктор с GetStringData
+	: CMyString(str.GetStringData())
 {
-	copy(str.GetStringData(), str.GetStringData() + m_length, m_pString);
-	m_pString[m_length] = ZERO_CODE_CHAR;
 }
 
 CMyString::CMyString(CMyString&& str) noexcept
@@ -79,7 +77,7 @@ CMyString CMyString::SubString(size_t start, size_t length) const
 {
 	if (start >= m_length)
 	{
-		throw logic_error("A substring cannot extend beyond the original string");
+		throw out_of_range("A substring cannot extend beyond the original string");
 	}
 
 	if (start + length >= m_length)
@@ -101,9 +99,9 @@ CMyString& CMyString::operator =(CMyString const& str)
 {
 	if (&str != this)
 	{
-		CMyString tempStr(str);
-		swap(m_pString, tempStr.m_pString);
-		swap(m_length, tempStr.m_length);
+		CMyString strToCopy(str);
+		swap(m_pString, strToCopy.m_pString);
+		swap(m_length, strToCopy.m_length);
 	}
 
 	return *this;
@@ -123,7 +121,7 @@ CMyString& CMyString::operator =(CMyString&& str) noexcept
 	return *this;
 }
 
-CMyString CMyString::operator +(CMyString str)
+CMyString CMyString::operator +(CMyString const& str) const
 {
 	if (GetLength() >= SIZE_MAX - str.GetLength())
 	{
@@ -132,31 +130,31 @@ CMyString CMyString::operator +(CMyString str)
 
 	size_t resultLength = GetLength() + str.GetLength();
 	char* pResult = new char(resultLength + 1);
-	strcpy_s(pResult, GetLength() + 1, GetStringData());
-	strcat_s(pResult, resultLength + 2, str.GetStringData());
+	copy(m_pString, m_pString + m_length, pResult);
+	copy(str.m_pString, str.m_pString + m_length, pResult + m_length);
 
-	return CMyString(pResult, resultLength);
+	return CMyString(pResult, resultLength); // утечка памяти
 }
 
-CMyString CMyString::operator +(std::string const& stlString)
+CMyString CMyString::operator +(std::string const& stlString) const
 {
 	CMyString str2(stlString);
 	return *this + str2;
 }
 
-CMyString CMyString::operator +(const char* pString)
+CMyString CMyString::operator +(const char* pString) const
 {
 	CMyString str2(pString);
 	return *this + str2;
 }
 
-CMyString& CMyString::operator +=(CMyString str)
+CMyString& CMyString::operator +=(CMyString const& str)
 {
 	*this = *this + str;
 	return *this;
 }
 
-strong_ordering CMyString::operator<=>(CMyString str) const
+strong_ordering CMyString::operator<=>(CMyString const& str) const
 {
 	const char* leftString = GetStringData();
 	const char* rightString = str.GetStringData();
@@ -164,7 +162,7 @@ strong_ordering CMyString::operator<=>(CMyString str) const
 	return lexicographical_compare_three_way(leftString, leftString + m_length, rightString, rightString + str.m_length);
 }
 
-bool CMyString::operator ==(CMyString str) const
+bool CMyString::operator ==(CMyString const& str) const
 {
 	if (m_length != str.m_length)
 	{
