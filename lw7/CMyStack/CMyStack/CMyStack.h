@@ -106,7 +106,7 @@ CMyStack<T>::~CMyStack()
 
 template <typename T>
 CMyStack<T>::CMyStack(CMyStack<T> const& stack)
-	: m_size(stack.GetSize())
+	: m_size(0)
 {
 	StackNode* node = stack.m_top;
 	if (node == nullptr)
@@ -115,11 +115,21 @@ CMyStack<T>::CMyStack(CMyStack<T> const& stack)
 		return;
 	}
 	m_top = new StackNode(node->value, nullptr);
+	m_size++;
 	StackNode* prev = m_top;
 	while (node->next != nullptr)
 	{
 		node = node->next;
-		prev->next = new StackNode(node->value, nullptr);
+		try
+		{
+			prev->next = new StackNode(node->value, nullptr);
+		}
+		catch (std::exception& exception)
+		{
+			Clear();
+			throw; // просто throw чтобы перевыбросить
+		}
+		m_size++;
 		prev = prev->next;
 	}
 }
@@ -151,6 +161,7 @@ CMyStack<T>& CMyStack<T>::operator =(CMyStack<T>&& stack) noexcept
 {
 	if (&stack != this)
 	{
+		Clear();
 		m_top = stack.m_top;
 		m_size = stack.m_size;
 		stack.m_top = nullptr;

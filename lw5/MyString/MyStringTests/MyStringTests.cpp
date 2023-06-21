@@ -129,7 +129,7 @@ SCENARIO("Тестирование методов CMyString")
 
 SCENARIO("Проверка операций конкатенации")
 {
-	WHEN("Складываем строки типа CMyString")
+	WHEN("Складываем строки типа CMyString") // проверять на maxLength
 	{
 		CMyString str1("Hello");
 		CMyString space(" ");

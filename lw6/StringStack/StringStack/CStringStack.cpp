@@ -66,7 +66,7 @@ CStringStack::~CStringStack()
 }
 
 CStringStack::CStringStack(CStringStack const& stack)
-	: m_size(stack.GetSize())
+	: m_size(0)
 {
 	StackNode* node = stack.m_top;
 	if (node == nullptr)
@@ -75,11 +75,22 @@ CStringStack::CStringStack(CStringStack const& stack)
 		return;
 	}
 	m_top = new StackNode(node->value, nullptr);
+	m_size++;
 	StackNode* prev = m_top;
 	while (node->next != nullptr)
 	{
 		node = node->next;
-		prev->next = new StackNode(node->value, nullptr);
+		try
+		{
+			// утечка памяти в случае исключения
+			prev->next = new StackNode(node->value, nullptr);
+			m_size++;
+		}
+		catch (std::exception& e)
+		{
+			Clear();
+			throw;
+		}
 		prev = prev->next;
 	}
 }
@@ -108,7 +119,8 @@ CStringStack& CStringStack::operator =(CStringStack&& stack) noexcept
 {
 	if (&stack != this)
 	{
-		delete m_top;
+		// удалять остальные узлы
+		Clear();
 		m_top = stack.m_top;
 		m_size = stack.m_size;
 		stack.m_top = nullptr;

@@ -133,7 +133,7 @@ CMyString CMyString::operator +(CMyString const& str) const
 	copy(m_pString, m_pString + m_length, pResult);
 	copy(str.m_pString, str.m_pString + m_length, pResult + m_length);
 
-	return CMyString(pResult, resultLength); // утечка памяти
+	return CMyString(pResult, resultLength, true); // утечка памяти
 }
 
 CMyString CMyString::operator +(std::string const& stlString) const
