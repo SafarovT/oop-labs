@@ -129,7 +129,7 @@ SCENARIO("Тестирование методов CMyString")
 
 SCENARIO("Проверка операций конкатенации")
 {
-	WHEN("Складываем две строки типа CMyString")
+	WHEN("Складываем строки типа CMyString") // проверять на maxLength
 	{
 		CMyString str1("Hello");
 		CMyString space(" ");
@@ -143,7 +143,33 @@ SCENARIO("Проверка операций конкатенации")
 		}
 	}
 
-	// other types
+	WHEN("Складываем строки CMyString с std::string")
+	{
+		CMyString str1("Hello");
+		std::string space(" ");
+		std::string str2("world!");
+		CMyString str = str1 + space + str2;
+
+		THEN("Строка верно сложилась")
+		{
+			CHECK(str.GetLength() == 12);
+			CHECK(AreStringsEqual(str.GetStringData(), "Hello world!"));
+		}
+	}
+
+	WHEN("Складываем строки CMyString с const char*")
+	{
+		CMyString str1("Hello");
+		const char* space = " ";
+		const char* str2 = "world!";
+		CMyString str = str1 + space + str2;
+
+		THEN("Строка верно сложилась")
+		{
+			CHECK(str.GetLength() == 12);
+			CHECK(AreStringsEqual(str.GetStringData(), "Hello world!"));
+		}
+	}
 }
 
 SCENARIO("Проверка операция булевой алгебры")
@@ -155,13 +181,17 @@ SCENARIO("Проверка операция булевой алгебры")
 		THEN("Сравнивая ее с различными строками получаем верный результат")
 		{
 			CHECK(str > CMyString("1233"));
+			CHECK_FALSE(str > CMyString("1235"));
 			CHECK(str < CMyString("1235"));
-			CHECK(str > CMyString("123"));
-			CHECK(str < CMyString("12340"));
+			CHECK_FALSE(str < CMyString("1233"));
 			CHECK(str >= CMyString("1234"));
+			CHECK_FALSE(str >= CMyString("1235"));
 			CHECK(str <= CMyString("1234"));
+			CHECK_FALSE(str <= CMyString("1233"));
 			CHECK(str == CMyString("1234"));
-			CHECK(str != CMyString("12344"));
+			CHECK_FALSE(str == CMyString("12345"));
+			CHECK(str != CMyString("12345"));
+			CHECK_FALSE(str != CMyString("1234"));
 		}
 	}
 }
@@ -218,13 +248,13 @@ SCENARIO("Проверка копирования и перемещения ст
 		AND_WHEN("Добавляем к первой строке одно слово")
 		{
 			CMyString str3(" add");
-			/*str += str3;
+			str += str3;
 
 			THEN("Первая строка изменилась, вторая нет")
 			{
 				CHECK(AreStringsEqual(str.GetStringData(), "hello world! add"));
 				CHECK(AreStringsEqual(str2.GetStringData(), "hello world!"));
-			}*/
+			}
 		}
 	}
 

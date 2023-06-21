@@ -3,8 +3,7 @@
 #include <string>
 #include <stdexcept>
 
-#include <vector>
-
+// использовать cosnt& например при сравнении
 class CMyString
 {
 public:
@@ -23,17 +22,19 @@ public:
 
 	CMyString& operator =(CMyString const& str);
 	CMyString& operator =(CMyString&& str) noexcept;
-	CMyString operator +(CMyString str);
-	CMyString operator +(std::string const& stlString);
-	CMyString operator +(const char* pString);
-	CMyString& operator +=(CMyString str);
-	std::strong_ordering operator<=>(CMyString str) const;
-	bool operator==(CMyString str) const;
+	CMyString operator +(CMyString const& str) const;
+	CMyString operator +(std::string const& stlString) const;
+	CMyString operator +(const char* pString) const;
+	CMyString& operator +=(CMyString const& str);
+	std::strong_ordering operator<=>(CMyString const& str) const;
+	bool operator==(CMyString const& str) const;
 	char& operator [](size_t index);
 	const char& operator [](size_t index) const;
 private:
 	char* m_pString;
 	size_t m_length;
+
+	CMyString(char* pString, size_t length, bool boolVar);
 };
 
 inline std::ostream& operator<<(std::ostream& stream, CMyString const& str)

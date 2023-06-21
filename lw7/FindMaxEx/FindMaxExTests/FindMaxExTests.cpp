@@ -11,6 +11,15 @@ TEST_CASE("Vector of integer")
 	CHECK(maxValue == 9);
 }
 
+TEST_CASE("Vector of 1 integer")
+{
+	std::vector<int> arr = { 333 };
+	int maxValue = 0;
+	bool isOperationSuccess = FindMax(arr, maxValue);
+	CHECK(isOperationSuccess);
+	CHECK(maxValue == 333);
+}
+
 TEST_CASE("Empty vector")
 {
 	std::vector<int> arr = {};

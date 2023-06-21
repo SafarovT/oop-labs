@@ -1,5 +1,5 @@
 #include <vector>
-#include <iostream>
+#include <exception>
 
 namespace
 {
@@ -14,14 +14,15 @@ inline bool FindMax(vector<T> const& arr, T& maxValue, Less const& less)
 		return false;
 	}
 
-	maxValue = arr[0];
-	for (T const& value : arr)
+	size_t maxValueIndex = 0;
+	for (size_t i = 1; i < arr.size(); i++)
 	{
-		if (less(maxValue, value))
+		if (less(arr[maxValueIndex], arr[i]))
 		{
-			maxValue = value;
+			maxValueIndex = i;
 		}
 	}
+	maxValue = arr[maxValueIndex];
 
 	return true;
 }
