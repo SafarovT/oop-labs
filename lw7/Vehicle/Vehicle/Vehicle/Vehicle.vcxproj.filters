@@ -1,0 +1,102 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Исходные файлы">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;c++;cppm;ixx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Файлы заголовков">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;h++;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Файлы ресурсов">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Interfaces">
+      <UniqueIdentifier>{6b90f6a2-7a76-4d4c-9f2e-83d2b0ac2af0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Classes">
+      <UniqueIdentifier>{93a0d9d7-dd4a-4e91-aaaa-58634cf3e896}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Template Implementations">
+      <UniqueIdentifier>{7069ee8e-dd6e-4f5d-9929-2bb78c4a52a2}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="main.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="CPoliceMan.cpp">
+      <Filter>Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="CRacer.cpp">
+      <Filter>Classes</Filter>
+    </ClCompile>
+    <ClCompile Include="CPersonImpl.h">
+      <Filter>Template Implementations</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="IBus.h">
+      <Filter>Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="ICar.h">
+      <Filter>Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="IPerson.h">
+      <Filter>Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="IPoliceCar.h">
+      <Filter>Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="IPoliceMan.h">
+      <Filter>Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="IRacer.h">
+      <Filter>Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="IRacingCar.h">
+      <Filter>Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="ITaxi.h">
+      <Filter>Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="IVehicle.h">
+      <Filter>Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="IBasicVehicle.h">
+      <Filter>Interfaces</Filter>
+    </ClInclude>
+    <ClInclude Include="CBus.h">
+      <Filter>Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="CPerson.h">
+      <Filter>Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="CPoliceCar.h">
+      <Filter>Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="CPoliceMan.h">
+      <Filter>Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="CRacer.h">
+      <Filter>Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="CRacingCar.h">
+      <Filter>Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="CTaxi.h">
+      <Filter>Classes</Filter>
+    </ClInclude>
+    <ClInclude Include="CVehicleImpl.h">
+      <Filter>Template Implementations</Filter>
+    </ClInclude>
+    <ClInclude Include="CCarImpl.h">
+      <Filter>Template Implementations</Filter>
+    </ClInclude>
+    <ClInclude Include="AllVehicles.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>
