@@ -5,9 +5,9 @@ class IBasicVehicle
 public:
 	virtual ~IBasicVehicle() {};
 	
-	virtual bool IsEmpty()const = 0;
-	virtual bool IsFull()const = 0;
-	virtual size_t GetPlaceCount()const = 0;
+	virtual bool IsEmpty() const = 0;
+	virtual bool IsFull() const = 0;
+	virtual size_t GetPlaceCount() const = 0;
 	virtual size_t GetPassengerCount() const = 0;
 	virtual void RemoveAllPassengers() = 0;
 };

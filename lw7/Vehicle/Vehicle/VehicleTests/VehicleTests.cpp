@@ -47,7 +47,7 @@ SCENARIO("Создание машин разных типов")
 			CHECK(car.GetPlaceCount() == 40);
 			CHECK(car.GetPassengerCount() == 0);
 			CHECK(car.IsEmpty());
-			CHECK(!car.IsFull());
+			CHECK_FALSE(car.IsFull());
 		}
 	}
 
@@ -55,8 +55,9 @@ SCENARIO("Создание машин разных типов")
 	{
 		CTaxi car(3, MakeOfTheCar::KIA);
 
-		THEN("Верно установилась марка машины")
+		THEN("Верно установилась марка машины и размер, следовательно наследование работает корректно")
 		{
+			CHECK(car.GetPlaceCount() == 3);
 			CHECK(car.GetMakeOfTheCar() == MakeOfTheCar::KIA);
 		}
 	}
@@ -65,9 +66,79 @@ SCENARIO("Создание машин разных типов")
 	{
 		CPoliceCar car(2, MakeOfTheCar::FORD);
 
-		THEN("Верно установилась марка машины")
+		THEN("Верно установилась марка машины, места устанавливаются верно, соотвественно наследованеи работает корректно")
 		{
+			CHECK(car.GetPlaceCount() == 2);
 			CHECK(car.GetMakeOfTheCar() == MakeOfTheCar::FORD);
+		}
+
+		AND_WHEN("Садим в машину 1 полицейского")
+		{
+			CPoliceMan police1("Man1", "Street");
+			car.AddPassenger(std::make_shared<CPoliceMan>(police1));
+
+			THEN("В машине появляется один пасажир")
+			{
+				CHECK(car.GetPassengerCount() == 1);
+				CHECK_FALSE(car.IsEmpty());
+				CHECK_FALSE(car.IsFull());
+			}
+
+			AND_WHEN("Пытаемся удалить пасажира с позиции на которой никого нет")
+			{
+				THEN("Выбрасывается исключение out_of_range")
+				{
+					CHECK_THROWS_AS(car.RemovePassenger(1), std::out_of_range);
+				}
+			}
+
+			AND_WHEN("Пытаемся взять пасажира с позиции на которой никого нет")
+			{
+				THEN("Выбрасывается исключение out_of_range")
+				{
+					CHECK_THROWS_AS(car.GetPassenger(1), std::out_of_range);
+				}
+			}
+
+			AND_WHEN("Добавляется еще один пасажир так, чтобы машина была полностью заполнена")
+			{
+				CPoliceMan police2("Man2", "Street2");
+				car.AddPassenger(std::make_shared<CPoliceMan>(police2));
+
+				THEN("Машина полна, каждый из пасажиров сидит на своих местах")
+				{
+					CHECK_FALSE(car.IsEmpty());
+					CHECK(car.IsFull());
+					CHECK(car.GetPassengerCount() == 2);
+					CHECK(car.GetPassenger(0).GetName() == "Man1");
+					CHECK(car.GetPassenger(1).GetName() == "Man2");
+				}
+
+				AND_WHEN("Пытаемся добавить еще одного пасажира")
+				{
+					CPoliceMan police3("Man3", "Street3");
+
+					THEN("Выбрасывается исключение logic_error")
+					{
+						CHECK_THROWS_AS(car.AddPassenger(std::make_shared<CPoliceMan>(police2)), std::logic_error);
+					}
+				}
+
+				AND_WHEN("Очищаем машину")
+				{
+					car.RemoveAllPassengers();
+
+					THEN("Машина пустая")
+					{
+						CHECK(car.GetPassengerCount() == 0);
+						CHECK(car.GetPlaceCount() == 2);
+						CHECK(car.IsEmpty());
+						CHECK_FALSE(car.IsFull());
+						CHECK_THROWS_AS(car.GetPassenger(0), std::out_of_range);
+					}
+				}
+			}
+
 		}
 	}
 
