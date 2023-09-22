@@ -127,7 +127,7 @@ CMyStack<T>::CMyStack(CMyStack<T> const& stack)
 		catch (std::exception& exception)
 		{
 			Clear();
-			throw; // просто throw чтобы перевыбросить
+			throw;
 		}
 		m_size++;
 		prev = prev->next;
